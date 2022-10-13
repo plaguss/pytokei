@@ -54,6 +54,7 @@ impl PyLanguages {
     pub fn language_names(&self) -> PyResult<PyObject> {
         let mut names = HashSet::new();
 //        let keys: Vec<_> = self.languages.keys().cloned().collect();
+        // transform the loop to .keys().map() with a closure if possible
         for (lang, _) in &self.languages {
             names.insert(lang.name());
         }
