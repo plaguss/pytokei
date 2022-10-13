@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use pyo3::prelude::*;
 use pyo3::types::PyString;
@@ -15,6 +15,8 @@ pub struct PyLanguages {
 
 #[pymethods]
 impl PyLanguages {
+    // Define a method __getattr__ to retrieve the languages:
+    // https://docs.rs/tokei/latest/tokei/
     #[new]
     pub fn py_new() -> Self {
         PyLanguages{languages: Languages::new()}
@@ -45,6 +47,18 @@ impl PyLanguages {
         map.insert("Python", "summary");
         return pyo3::Python::with_gil( |py| {
             Ok( map.to_object( py ) )
+        } );
+    }
+
+    // Return the set of languages.
+    pub fn language_names(&self) -> PyResult<PyObject> {
+        let mut names = HashSet::new();
+//        let keys: Vec<_> = self.languages.keys().cloned().collect();
+        for (lang, _) in &self.languages {
+            names.insert(lang.name());
+        }
+        return pyo3::Python::with_gil( |py| {
+            Ok(names.to_object(py))
         } );
     }
 
