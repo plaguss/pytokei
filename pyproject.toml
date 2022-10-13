@@ -10,6 +10,15 @@ authors = [
     {name ='Agustin Piqueres', email = 'agustin.piqueres@gmail.com'},
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest >= 7.1.3",
+    "pytest-cov>=2",
+    "black",
+    "isort",
+    "nox"
+]
+
 [tool.maturin]
 bindings = 'pyo3'
 sdist-include = ['Cargo.lock']
