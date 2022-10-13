@@ -12,6 +12,7 @@ use tokei::{
     Config,
     Languages,
     Sort,
+    CodeStats,
 //    LanguageType
 };
 use std::collections::HashMap;
@@ -48,6 +49,62 @@ impl PySort {
     }
 }
 
+#[derive(Clone)]
+#[pyclass]
+pub struct PyCodeStats {
+    pub stats: CodeStats
+}
+
+#[pymethods]
+impl PyCodeStats {
+    #[new]
+    fn py_new() -> Self {
+        PyCodeStats{stats: CodeStats::new()}
+    }
+
+    #[getter]
+    fn blanks(&self) -> usize {
+        self.stats.blanks
+    }
+
+    #[getter]
+    fn code(&self) -> usize {
+        self.stats.code
+    }
+
+    #[getter]
+    fn comments(&self) -> usize {
+        self.stats.comments
+    }
+
+    fn lines(&self) -> usize {
+        self.stats.lines()
+    }
+
+    fn summarise(&self) -> PyCodeStats {
+        // The new object is created by copying and inserting the new summarised values
+        let mut new_stats = self.clone();
+        let summ = self.stats.summarise();
+        new_stats.stats.blanks = summ.blanks;
+        new_stats.stats.code = summ.code;
+        new_stats.stats.comments = summ.comments;
+        return new_stats
+    }
+
+    fn content(&self) -> PyResult<PyObject> {
+        // Obtain the inner content as a dict in Python.
+        let mut map = HashMap::new();
+        map.insert("blanks", self.blanks());
+        map.insert("code", self.code());
+        map.insert("comments", self.comments());
+        map.insert("lines", self.lines());
+        return pyo3::Python::with_gil( |py| {
+            Ok( map.to_object( py ) )
+        } );
+    }
+
+    // fn __repr__(&self) -> PyString {}  // TBD
+}
 
 #[pyclass]
 pub struct PyConfig {
@@ -180,6 +237,7 @@ fn _pytokei(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyLanguages>().unwrap();
 //    m.add_class::<PyLanguageType>().unwrap();
     m.add_class::<PySort>().unwrap();
+    m.add_class::<PyCodeStats>().unwrap();
     Ok(())
-
+    
 }
