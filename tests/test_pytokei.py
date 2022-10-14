@@ -4,8 +4,10 @@ files found in https://github.com/XAMPPRocky/tokei/tree/master/tests/data
 
 import os
 import pathlib
-import pytokei as tokei
+
 import pytest
+
+import pytokei as tokei
 
 here = os.path.dirname(os.path.abspath(__file__))
 SAMPLE_FILES_PATH = str(pathlib.Path(here) / "data")
@@ -77,3 +79,16 @@ class TestPyLanguages:
         conf = tokei.PyConfig()
         languages.get_statistics(path, ignore, conf)
         assert languages.language_names() == set(["Python", "Rust", "Dockerfile"])
+
+
+class TestPyLanguageTypes:
+    def test_language_types(self):
+        lang_types = tokei.language_types()
+        assert isinstance(lang_types, dict)
+
+    def test_py_language(self):
+        python = tokei.language_types()["Python"]
+        assert isinstance(python, tokei.LanguageTypeContainer)
+        assert repr(python) == "LanguageTypeContainer(Python)"
+
+# TODO: Needs checks for possible errors.
