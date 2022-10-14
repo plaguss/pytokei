@@ -1,5 +1,5 @@
-
 use std::collections::HashMap;
+use std::path::PathBuf;
 use pyo3::prelude::*;
 use tokei::{
     CodeStats,
@@ -61,4 +61,21 @@ impl PyCodeStats {
     }
 
     // fn __repr__(&self) -> PyString {}  // TBD
+}
+
+
+#[pyclass(name="Report")]
+pub struct PyReport {
+    pub report: Report
+}
+
+
+#[pymethods]
+impl PyReport {
+    #[new]
+    pub fn py_new(name: &str) -> Self {
+        let mut path = PathBuf::new();
+        path.push(name);
+        PyReport{report: Report::new(path)}
+    }
 }
