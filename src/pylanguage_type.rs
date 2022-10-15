@@ -1,7 +1,15 @@
-use pyo3::prelude::*;
+
 use std::collections::HashMap;
+use std::collections::hash_map::DefaultHasher;
+
+// Required to call the `.hash` and `.finish` methods, which are defined on traits.
+use std::hash::{Hash, Hasher};
+
+use pyo3::prelude::*;
+use pyo3::class::basic::CompareOp;
 
 use tokei::LanguageType;
+
 
 // NOTE: Yet to decide how to deal with this
 /*
@@ -249,6 +257,7 @@ fn map_lang_type(lang_type: &str) -> LanguageType {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[pyclass]
 pub struct LanguageTypeContainer(LanguageType);
 
@@ -260,6 +269,23 @@ impl LanguageTypeContainer {
             //            LanguageTypeContainer(lang_type_map(lang_type_name))
             LanguageTypeContainer(map_lang_type(lang_type_name)),
         )
+    }
+
+    pub fn __hash__(&self) -> u64 {
+        let mut hasher = DefaultHasher::new();
+        self.0.hash(&mut hasher);
+        hasher.finish()
+    }
+
+    pub fn __richcmp__(&self, other: &Self, op: CompareOp) -> PyResult<bool> {
+        match op {
+            CompareOp::Lt => Ok(self.0 < other.0),
+            CompareOp::Le => Ok(self.0 <= other.0),
+            CompareOp::Eq => Ok(self.0 == other.0),
+            CompareOp::Ne => Ok(self.0 != other.0),
+            CompareOp::Gt => Ok(self.0 > other.0),
+            CompareOp::Ge => Ok(self.0 >= other.0),
+        }
     }
 
     pub fn __repr__(&self) -> PyResult<String> {
