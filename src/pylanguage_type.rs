@@ -1,15 +1,13 @@
-
-use std::collections::HashMap;
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
 
 // Required to call the `.hash` and `.finish` methods, which are defined on traits.
 use std::hash::{Hash, Hasher};
 
-use pyo3::prelude::*;
 use pyo3::class::basic::CompareOp;
+use pyo3::prelude::*;
 
 use tokei::LanguageType;
-
 
 // NOTE: Yet to decide how to deal with this
 /*
@@ -258,8 +256,8 @@ fn map_lang_type(lang_type: &str) -> LanguageType {
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-#[pyclass(name="LanguageType")]
-pub struct PyLanguageType(LanguageType);
+#[pyclass(name = "LanguageType")]
+pub struct PyLanguageType(pub LanguageType);
 
 #[pymethods]
 impl PyLanguageType {

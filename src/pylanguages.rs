@@ -2,10 +2,13 @@ use std::collections::{HashMap, HashSet};
 
 use pyo3::prelude::*;
 use pyo3::types::PyString;
+use pyo3::exceptions::PyValueError;
 
 use tokei::Languages;
 
 use crate::pyconfig::PyConfig;
+use crate::pylanguage_type::PyLanguageType;
+use crate::pylanguage::PyLanguage;
 
 #[pyclass(name = "Languages")]
 pub struct PyLanguages {
@@ -17,7 +20,7 @@ impl PyLanguages {
     // Define a method __getattr__ to retrieve the languages:
     // https://docs.rs/tokei/latest/tokei/
     #[new]
-    pub fn py_new() -> Self {
+    pub fn new() -> Self {
         PyLanguages {
             languages: Languages::new(),
         }
@@ -56,4 +59,17 @@ impl PyLanguages {
         }
         return pyo3::Python::with_gil(|py| Ok(names.to_object(py)));
     }
+
+    // Implement the same functionality as in the main example.
+    // Corresponds to let rust = &languages[&LanguageType::Rust]; in python
+    pub fn __getitem__(&self, lang_type: &PyLanguageType) -> Result<PyLanguage, PyErr> {
+        let maybe_lang = self.languages.get(&lang_type.0);
+
+        match maybe_lang {
+            Some(maybe_lang) => Ok(PyLanguage{language: maybe_lang.clone()}),
+            None => Err(PyValueError::new_err(format!("LanguageType not found: {}", lang_type.0)))
+        }
+
+    }
+
 }
