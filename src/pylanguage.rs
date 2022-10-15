@@ -48,6 +48,7 @@ impl PyLanguage {
     
     #[getter]
     pub fn children(&self) -> HashMap<PyLanguageType, Vec<PyReport>> {
+        // This version returns a representation of the internal structure
         let children_ = self.language.children.clone();
         let mut children = HashMap::new();
         for (lang_type, reports) in children_.iter() {
@@ -61,7 +62,7 @@ impl PyLanguage {
     }
     
     #[getter]
-    pub fn innacurate(&self) -> bool {
+    pub fn inaccurate(&self) -> bool {
         self.language.inaccurate
     }
 }
