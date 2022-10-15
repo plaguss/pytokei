@@ -63,6 +63,9 @@ class TestCodeStats:
     def test_content(self, stats):
         assert stats.content() == {"blanks": 0, "code": 0, "comments": 0, "lines": 0}
 
+    def test_repr(self, stats):
+        assert repr(stats) == "CodeStats(blanks: 0, code: 0, comments: 0, lines: 0)"
+
 
 class TestReport:
     @pytest.fixture
@@ -91,6 +94,12 @@ class TestLanguages:
         conf = tokei.Config()
         languages.get_statistics(path, ignore, conf)
         assert languages.language_names() == set(["Python", "Rust", "Dockerfile"])
+
+    def test_languages_total(self):
+        assert 1==2
+
+    def test_languages_by_file(self):
+        assert 1==2
 
 
 class TestLanguageTypes:
