@@ -1,30 +1,29 @@
-
-use std::str::FromStr;
 use pyo3::prelude::*;
+use std::str::FromStr;
 use tokei::Sort;
 
-
-#[pyclass]
+#[pyclass(name = "Sort")]
 pub struct PySort {
-    pub sort: Sort
+    pub sort: Sort,
 }
-
 
 #[pymethods]
 impl PySort {
     #[new]
     fn py_new() -> Self {
-        PySort{sort: Sort::Lines}
+        PySort { sort: Sort::Lines }
     }
 
     #[staticmethod]
     pub fn from_str(s: &str) -> PyResult<PySort> {
-        // NOTE: Take care of the error of 
-        Ok(PySort{sort: Sort::from_str(s).unwrap()})
+        // NOTE: Take care of the error of
+        Ok(PySort {
+            sort: Sort::from_str(s).unwrap(),
+        })
     }
 
     pub fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("PySort({:#?})", self.sort))
+        Ok(format!("Sort({:#?})", self.sort))
     }
 }
 
@@ -44,6 +43,3 @@ NOT DEVELOPED YET
     }
 
 */
-
-
-

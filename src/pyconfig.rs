@@ -1,18 +1,18 @@
 use pyo3::prelude::*;
 use tokei::Config;
 
-
-#[pyclass]
+#[pyclass(name = "Config")]
 pub struct PyConfig {
-    pub config: Config
+    pub config: Config,
 }
-
 
 #[pymethods]
 impl PyConfig {
     #[new]
     pub fn py_new() -> Self {
-        PyConfig{config: Config::default()}
+        PyConfig {
+            config: Config::default(),
+        }
     }
 
     #[getter]

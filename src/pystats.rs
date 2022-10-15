@@ -1,22 +1,21 @@
+use pyo3::prelude::*;
 use std::collections::HashMap;
 use std::path::PathBuf;
-use pyo3::prelude::*;
-use tokei::{
-    CodeStats,
-    Report
-};
+use tokei::{CodeStats, Report};
 
 #[derive(Clone)]
-#[pyclass]
+#[pyclass(name = "CodeStats")]
 pub struct PyCodeStats {
-    pub stats: CodeStats
+    pub stats: CodeStats,
 }
 
 #[pymethods]
 impl PyCodeStats {
     #[new]
-    pub fn py_new() -> Self {
-        PyCodeStats{stats: CodeStats::new()}
+    pub fn new() -> Self {
+        PyCodeStats {
+            stats: CodeStats::new(),
+        }
     }
 
     #[getter]
@@ -45,7 +44,7 @@ impl PyCodeStats {
         new_stats.stats.blanks = summ.blanks;
         new_stats.stats.code = summ.code;
         new_stats.stats.comments = summ.comments;
-        return new_stats
+        return new_stats;
     }
 
     pub fn content(&self) -> PyResult<PyObject> {
@@ -56,26 +55,36 @@ impl PyCodeStats {
             ("comments", self.comments()),
             ("lines", self.lines()),
         ]);
-        return pyo3::Python::with_gil( |py| {
-            Ok( map.to_object( py ) )
-        } );
+        return pyo3::Python::with_gil(|py| Ok(map.to_object(py)));
     }
 
     // fn __repr__(&self) -> PyString {}  // TBD
 }
 
-
-#[pyclass(name="Report")]
+#[pyclass(name = "Report")]
 pub struct PyReport {
-    pub report: Report
+    pub report: Report,
 }
-
 
 #[pymethods]
 impl PyReport {
     #[new]
     pub fn new(name: &str) -> Self {
         let path = PathBuf::from(name);
-        PyReport{report: Report::new(path)}
+        PyReport {
+            report: Report::new(path),
+        }
+    }
+
+    #[getter]
+    pub fn name(&self) -> PathBuf {
+        self.report.name.clone()
+    }
+
+    #[getter]
+    pub fn stats(&self) -> PyCodeStats {
+        let mut stats = PyCodeStats::new();
+        stats.stats += self.report.stats.clone();
+        stats
     }
 }

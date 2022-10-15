@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use pyo3::prelude::*;
+use std::collections::HashMap;
 
 use tokei::LanguageType;
 
@@ -245,10 +245,9 @@ fn map_lang_type(lang_type: &str) -> LanguageType {
         "Zig" => LanguageType::Zig,
         "Zsh" => LanguageType::Zsh,
         // THIS IS BAD, YET TO DECIDE WHAT TO DO.
-        &_ => LanguageType::ABNF
+        &_ => LanguageType::ABNF,
     }
 }
-
 
 #[pyclass]
 pub struct LanguageTypeContainer(LanguageType);
@@ -258,8 +257,8 @@ impl LanguageTypeContainer {
     #[new]
     pub fn new(lang_type_name: &str) -> PyResult<Self> {
         Ok(
-//            LanguageTypeContainer(lang_type_map(lang_type_name))
-            LanguageTypeContainer(map_lang_type(lang_type_name))
+            //            LanguageTypeContainer(lang_type_map(lang_type_name))
+            LanguageTypeContainer(map_lang_type(lang_type_name)),
         )
     }
 
@@ -270,15 +269,14 @@ impl LanguageTypeContainer {
 
 #[pyfunction]
 pub fn language_types() -> HashMap<&'static str, LanguageTypeContainer> {
-//pub fn language_types() -> HashMap<&'static str, &'static str> {
-//pub fn language_types() -> HashMap<String, String> {
+    //pub fn language_types() -> HashMap<&'static str, &'static str> {
+    //pub fn language_types() -> HashMap<String, String> {
     let mut lang_types = HashMap::new();
 
     for l in LanguageType::list() {
         lang_types.insert(l.name(), LanguageTypeContainer(map_lang_type(l.name())));
-//        lang_types.insert(l.name(), l.name());
+        //        lang_types.insert(l.name(), l.name());
     }
 
     lang_types
-
 }
