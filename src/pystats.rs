@@ -58,7 +58,15 @@ impl PyCodeStats {
         return pyo3::Python::with_gil(|py| Ok(map.to_object(py)));
     }
 
-    // fn __repr__(&self) -> PyString {}  // TBD
+    pub fn __repr__(&self) -> PyResult<String> {
+        Ok(format!(
+            "CodeStats(blanks: {}, code: {}, comments: {}, lines: {})",
+            self.blanks(),
+            self.code(),
+            self.comments(),
+            self.lines()
+        ))
+    }
 }
 
 #[pyclass(name = "Report")]
@@ -83,8 +91,7 @@ impl PyReport {
 
     #[getter]
     pub fn stats(&self) -> PyCodeStats {
-        let mut stats = PyCodeStats::new();
-        stats.stats += self.report.stats.clone();
+        let stats = PyCodeStats{stats: self.report.stats.clone()};
         stats
     }
 }
