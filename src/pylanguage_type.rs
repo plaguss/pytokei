@@ -3,6 +3,17 @@ use pyo3::prelude::*;
 
 use tokei::LanguageType;
 
+// NOTE: Yet to decide how to deal with this
+/*
+fn lang_type_map(l: &str) -> LanguageType {
+//fn lang_type_map() -> HashMap<&'static str, LanguageType> {
+    let language_type_map = HashMap::from([
+        ("ABNF", LanguageType::ABNF),
+        ("ABAP", LanguageType::Abap),
+    ]);
+    language_type_map
+}
+*/
 
 //NOTE: control possible inexistent language with Option, Some...
 fn map_lang_type(lang_type: &str) -> LanguageType {
@@ -247,6 +258,7 @@ impl LanguageTypeContainer {
     #[new]
     pub fn new(lang_type_name: &str) -> PyResult<Self> {
         Ok(
+//            LanguageTypeContainer(lang_type_map(lang_type_name))
             LanguageTypeContainer(map_lang_type(lang_type_name))
         )
     }
