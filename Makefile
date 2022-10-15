@@ -13,4 +13,4 @@ mypy:
 format:
 	$(isort)
 	$(black)
-	cargo fmt
+	cargo fmt --all
