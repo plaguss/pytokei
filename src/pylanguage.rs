@@ -1,12 +1,10 @@
-//use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use pyo3::prelude::*;
-//use pyo3::types::PyString;
 
 use tokei::Language;
 
-//use crate::pyconfig::PyConfig;
-//use crate::pylanguage_type::LanguageTypeContainer;
+use crate::pylanguage_type::PyLanguageType;
 use crate::pystats::PyReport;
 
 #[pyclass(name = "Language")]
@@ -47,14 +45,21 @@ impl PyLanguage {
         }
         reports
     }
-
-    /*
+    
     #[getter]
-    pub fn children(&self) -> BtreeMap<, Vec<PyReport>> {
-        let children = self.language.children;
+    pub fn children(&self) -> HashMap<PyLanguageType, Vec<PyReport>> {
+        let children_ = self.language.children.clone();
+        let mut children = HashMap::new();
+        for (lang_type, reports) in children_.iter() {
+            let mut pyreports = Vec::new();
+            for r in reports.iter() {
+                pyreports.push(PyReport{report: r.clone()});
+            }
+            children.insert(PyLanguageType(lang_type.clone()), pyreports);
+        }
+        children
     }
-    */
-
+    
     #[getter]
     pub fn innacurate(&self) -> bool {
         self.language.inaccurate
