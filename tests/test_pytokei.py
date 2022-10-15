@@ -109,8 +109,8 @@ class TestLanguageTypes:
 
     def test_py_language(self):
         python = tokei.language_types()["Python"]
-        assert isinstance(python, tokei.LanguageTypeContainer)
-        assert repr(python) == "LanguageTypeContainer(Python)"
+        assert isinstance(python, tokei.LanguageType)
+        assert repr(python) == "LanguageType(Python)"
 
 
 # TODO: Needs checks for possible errors.

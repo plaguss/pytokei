@@ -258,16 +258,16 @@ fn map_lang_type(lang_type: &str) -> LanguageType {
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-#[pyclass]
-pub struct LanguageTypeContainer(LanguageType);
+#[pyclass(name="LanguageType")]
+pub struct PyLanguageType(LanguageType);
 
 #[pymethods]
-impl LanguageTypeContainer {
+impl PyLanguageType {
     #[new]
     pub fn new(lang_type_name: &str) -> PyResult<Self> {
         Ok(
             //            LanguageTypeContainer(lang_type_map(lang_type_name))
-            LanguageTypeContainer(map_lang_type(lang_type_name)),
+            PyLanguageType(map_lang_type(lang_type_name)),
         )
     }
 
@@ -289,18 +289,18 @@ impl LanguageTypeContainer {
     }
 
     pub fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("LanguageTypeContainer({:#?})", self.0))
+        Ok(format!("LanguageType({:#?})", self.0))
     }
 }
 
 #[pyfunction]
-pub fn language_types() -> HashMap<&'static str, LanguageTypeContainer> {
+pub fn language_types() -> HashMap<&'static str, PyLanguageType> {
     //pub fn language_types() -> HashMap<&'static str, &'static str> {
     //pub fn language_types() -> HashMap<String, String> {
     let mut lang_types = HashMap::new();
 
     for l in LanguageType::list() {
-        lang_types.insert(l.name(), LanguageTypeContainer(map_lang_type(l.name())));
+        lang_types.insert(l.name(), PyLanguageType(map_lang_type(l.name())));
         //        lang_types.insert(l.name(), l.name());
     }
 

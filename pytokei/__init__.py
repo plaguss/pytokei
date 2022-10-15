@@ -2,7 +2,7 @@ from pytokei._pytokei import (
     CodeStats,
     Config,
     Languages,
-    LanguageTypeContainer,
+    LanguageType,
     Report,
     Sort,
     language_types,
@@ -15,7 +15,7 @@ __all__ = [
     "Sort",
     "CodeStats",
     "language_types",
-    "LanguageTypeContainer",
+    "LanguageType",
     "Report",
     "Language"
 ]

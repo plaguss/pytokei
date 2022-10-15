@@ -24,7 +24,8 @@ impl PyLanguages {
     }
 
     pub fn get_statistics(&mut self, paths: &PyString, ignored: &PyString, config: &PyConfig) {
-        // NOTE: First attempt using only a string
+        // NOTE: First attempt using only a string,
+        // in tokei it takes a list of paths
         let binding_path = paths.to_string();
         let paths_: &str = binding_path.as_ref();
 

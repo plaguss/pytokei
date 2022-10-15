@@ -47,10 +47,11 @@ impl PyLanguage {
         }
         reports
     }
+
     /*
     #[getter]
-    pub fn children(&self) -> usize {
-        // TBD
+    pub fn children(&self) -> BtreeMap<, Vec<PyReport>> {
+        let children = self.language.children;
     }
     */
 
