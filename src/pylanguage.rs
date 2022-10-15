@@ -6,6 +6,7 @@ use tokei::Language;
 
 use crate::pylanguage_type::PyLanguageType;
 use crate::pystats::PyReport;
+use crate::pysort::PySort;
 
 #[pyclass(name = "Language")]
 pub struct PyLanguage {
@@ -14,6 +15,8 @@ pub struct PyLanguage {
 
 #[pymethods]
 impl PyLanguage {
+    // mark_innacurate is not implemented.
+    // https://docs.rs/tokei/latest/tokei/struct.Language.html#impl
     #[new]
     pub fn new() -> Self {
         PyLanguage {
@@ -41,11 +44,11 @@ impl PyLanguage {
         let mut reports = Vec::new();
         let inner = self.language.reports.clone();
         for r in &inner {
-            reports.push(PyReport{report: r.clone()});
+            reports.push(PyReport { report: r.clone() });
         }
         reports
     }
-    
+
     #[getter]
     pub fn children(&self) -> HashMap<PyLanguageType, Vec<PyReport>> {
         // This version returns a representation of the internal structure
@@ -54,15 +57,40 @@ impl PyLanguage {
         for (lang_type, reports) in children_.iter() {
             let mut pyreports = Vec::new();
             for r in reports.iter() {
-                pyreports.push(PyReport{report: r.clone()});
+                pyreports.push(PyReport { report: r.clone() });
             }
             children.insert(PyLanguageType(lang_type.clone()), pyreports);
         }
         children
     }
-    
+
     #[getter]
     pub fn inaccurate(&self) -> bool {
         self.language.inaccurate
     }
+
+    pub fn lines(&self) -> usize {
+        self.language.lines()
+    }
+
+    pub fn add_report(&mut self, report: PyReport) {
+        self.language.add_report(report.report);
+    }
+
+    pub fn summarise(&self) -> PyLanguage {
+        PyLanguage{language: self.language.summarise()}
+    }
+
+    pub fn total(&mut self) {
+        self.language.total();
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.language.is_empty()
+    }
+
+    pub fn sort_by(&mut self, category: PySort) {
+        self.language.sort_by(category.sort);
+    }
+
 }
