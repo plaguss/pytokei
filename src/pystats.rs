@@ -69,6 +69,7 @@ impl PyCodeStats {
     }
 }
 
+#[derive(Clone)]
 #[pyclass(name = "Report")]
 pub struct PyReport {
     pub report: Report,
@@ -91,7 +92,9 @@ impl PyReport {
 
     #[getter]
     pub fn stats(&self) -> PyCodeStats {
-        let stats = PyCodeStats{stats: self.report.stats.clone()};
+        let stats = PyCodeStats {
+            stats: self.report.stats.clone(),
+        };
         stats
     }
 }
