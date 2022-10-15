@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 use std::str::FromStr;
 use tokei::Sort;
 
+#[derive(Clone)]
 #[pyclass(name = "Sort")]
 pub struct PySort {
     pub sort: Sort,
