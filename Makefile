@@ -7,6 +7,9 @@ develop:
 test:
 	pytest tests
 
+mypy:
+	mypy pytokei
+
 format:
 	$(isort)
 	$(black)
