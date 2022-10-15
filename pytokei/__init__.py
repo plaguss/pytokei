@@ -1,4 +1,3 @@
-# from pytokei._pytokei import PyLanguages, PyConfig, PySort, PyCodeStats, language_types, LanguageTypeContainer, Report
 from pytokei._pytokei import (
     CodeStats,
     Config,
@@ -7,9 +6,9 @@ from pytokei._pytokei import (
     Report,
     Sort,
     language_types,
+    Language
 )
 
-# __all__ = ["PyLanguages", "PyConfig", "PySort", "PyCodeStats", "language_types", "LanguageTypeContainer", "Report"]
 __all__ = [
     "Languages",
     "Config",
@@ -18,4 +17,5 @@ __all__ = [
     "language_types",
     "LanguageTypeContainer",
     "Report",
+    "Language"
 ]
