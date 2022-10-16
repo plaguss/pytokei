@@ -112,4 +112,8 @@ impl PyLanguage {
     pub fn sort_by(&mut self, category: PySort) {
         self.language.sort_by(category.sort);
     }
+
+    pub fn __repr__(&self) -> String {
+        format!("Language(empty: {:?})", self.is_empty())
+    }
 }
