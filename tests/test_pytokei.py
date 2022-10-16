@@ -79,6 +79,13 @@ class TestReport:
     def test_stats(self, report):
         assert isinstance(report.stats, tokei.CodeStats)
 
+    def test_repr(self, report):
+        # Test only that expected strings are contained
+        # in the name to avoid writing the full path it shows
+        repr_str = repr(report)
+        assert repr_str.startswith("Report(")
+        assert repr_str.endswith('Dockerfile")')
+
 
 class TestLanguages:
     @pytest.fixture

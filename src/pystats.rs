@@ -97,4 +97,8 @@ impl PyReport {
         };
         stats
     }
+
+    pub fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("Report({:?})", self.name()))
+    }
 }
