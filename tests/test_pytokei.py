@@ -80,6 +80,11 @@ class TestCodeStats:
         assert isinstance(blobs, dict)
         assert len(blobs) == 0  # Without anything parsed has no content
 
+    def test_blobs_plain(self, stats):
+        blobs = stats.blobs_plain()
+        assert isinstance(blobs, dict)
+        assert len(blobs) == 0  # Without anything parsed has no content
+
 
 class TestReport:
     @pytest.fixture
@@ -228,6 +233,13 @@ class TestPytokei:
 
     @pytest.mark.skip
     def test_blobs_from_code_stats(self):
+        blobs = 1
+        # TODO: If it fails, do this check once parsed
+        assert isinstance(list(blobs.keys())[0], tokei.LanguageType)
+        assert isinstance(list(blobs.values())[0], tokei.CodeStats)
+
+    @pytest.mark.skip
+    def test_blobs_plain_from_code_stats(self):
         blobs = 1
         # TODO: If it fails, do this check once parsed
         assert isinstance(list(blobs.keys())[0], tokei.LanguageType)
