@@ -145,6 +145,9 @@ class TestLanguageType:
         python = tokei.language_types()["Python"]
         assert repr(python) == "LanguageType(Python)"
 
+    def test_name(self):
+        assert "Python" == tokei.LanguageType("Python").name()
+
 
 class TestLanguage:
     @pytest.fixture
