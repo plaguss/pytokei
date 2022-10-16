@@ -1,257 +1,246 @@
 use std::collections::hash_map::DefaultHasher;
-use std::collections::HashMap;
 
 // Required to call the `.hash` and `.finish` methods, which are defined on traits.
 use std::hash::{Hash, Hasher};
 
 use pyo3::class::basic::CompareOp;
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 use tokei::LanguageType;
 
-// NOTE: Yet to decide how to deal with this
-/*
-fn lang_type_map(l: &str) -> LanguageType {
-//fn lang_type_map() -> HashMap<&'static str, LanguageType> {
-    let language_type_map = HashMap::from([
-        ("ABNF", LanguageType::ABNF),
-        ("ABAP", LanguageType::Abap),
-    ]);
-    language_type_map
-}
-*/
-
-//NOTE: control possible inexistent language with Option, Some...
-fn map_lang_type(lang_type: &str) -> LanguageType {
+fn language_type_mapper(lang_type: &str) -> Result<LanguageType, pyo3::PyErr> {
     match lang_type {
-        "ABNF" => LanguageType::ABNF,
-        "Abap" => LanguageType::Abap,
-        "ActionScript" => LanguageType::ActionScript,
-        "Ada" => LanguageType::Ada,
-        "Agda" => LanguageType::Agda,
-        "Alex" => LanguageType::Alex,
-        "Alloy" => LanguageType::Alloy,
-        "Arduino C++" => LanguageType::Arduino,
-        "AsciiDoc" => LanguageType::AsciiDoc,
-        "ASN.1" => LanguageType::Asn1,
-        "ASP" => LanguageType::Asp,
-        "ASP.NET" => LanguageType::AspNet,
-        "Assembly" => LanguageType::Assembly,
-        "GNU Style Assembly" => LanguageType::AssemblyGAS,
-        "AutoHotKey" => LanguageType::AutoHotKey,
-        "Autoconf" => LanguageType::Autoconf,
-        "Automake" => LanguageType::Automake,
-        "BASH" => LanguageType::Bash,
-        "Batch" => LanguageType::Batch,
-        "Bean" => LanguageType::Bean,
-        "BrightScript" => LanguageType::BrightScript,
-        "C" => LanguageType::C,
-        "C Header" => LanguageType::CHeader,
-        "CMake" => LanguageType::CMake,
-        "C#" => LanguageType::CSharp,
-        "C Shell" => LanguageType::CShell,
-        "Cabal" => LanguageType::Cabal,
-        "Cassius" => LanguageType::Cassius,
-        "Ceylon" => LanguageType::Ceylon,
-        "Clojure" => LanguageType::Clojure,
-        "ClojureC" => LanguageType::ClojureC,
-        "ClojureScript" => LanguageType::ClojureScript,
-        "COBOL" => LanguageType::Cobol,
-        "CodeQL" => LanguageType::CodeQL,
-        "CoffeeScript" => LanguageType::CoffeeScript,
-        "Cogent" => LanguageType::Cogent,
-        "ColdFusion" => LanguageType::ColdFusion,
-        "ColdFusion CFScript" => LanguageType::ColdFusionScript,
-        "Coq" => LanguageType::Coq,
-        "C++" => LanguageType::Cpp,
-        "C++ Header" => LanguageType::CppHeader,
-        "Crystal" => LanguageType::Crystal,
-        "CSS" => LanguageType::Css,
-        "D" => LanguageType::D,
-        "DAML" => LanguageType::Daml,
-        "Dart" => LanguageType::Dart,
-        "Device Tree" => LanguageType::DeviceTree,
-        "Dhall" => LanguageType::Dhall,
-        "Dockerfile" => LanguageType::Dockerfile,
-        ".NET Resource" => LanguageType::DotNetResource,
-        "Dream Maker" => LanguageType::DreamMaker,
-        "Dust.js" => LanguageType::Dust,
-        "Edn" => LanguageType::Edn,
-        "Emacs Lisp" => LanguageType::Elisp,
-        "Elixir" => LanguageType::Elixir,
-        "Elm" => LanguageType::Elm,
-        "Elvish" => LanguageType::Elvish,
-        "Emacs Dev Env" => LanguageType::EmacsDevEnv,
-        "Emojicode" => LanguageType::Emojicode,
-        "Erlang" => LanguageType::Erlang,
-        "FEN" => LanguageType::FEN,
-        "F#" => LanguageType::FSharp,
-        "Fish" => LanguageType::Fish,
-        "FlatBuffers Schema" => LanguageType::FlatBuffers,
-        "Forth" => LanguageType::Forth,
-        "FORTRAN Legacy" => LanguageType::FortranLegacy,
-        "FORTRAN Modern" => LanguageType::FortranModern,
-        "FreeMarker" => LanguageType::FreeMarker,
-        "F*" => LanguageType::Fstar,
-        "Futhark" => LanguageType::Futhark,
-        "GDB Script" => LanguageType::GDB,
-        "GDScript" => LanguageType::GdScript,
-        "Gherkin (Cucumber)" => LanguageType::Gherkin,
-        "Gleam" => LanguageType::Gleam,
-        "GLSL" => LanguageType::Glsl,
-        "Go" => LanguageType::Go,
-        "Go HTML" => LanguageType::Gohtml,
-        "GraphQL" => LanguageType::Graphql,
-        "Groovy" => LanguageType::Groovy,
-        "Gwion" => LanguageType::Gwion,
-        "Hamlet" => LanguageType::Hamlet,
-        "Handlebars" => LanguageType::Handlebars,
-        "Happy" => LanguageType::Happy,
-        "Haskell" => LanguageType::Haskell,
-        "Haxe" => LanguageType::Haxe,
-        "HCL" => LanguageType::Hcl,
-        "Headache" => LanguageType::Headache,
-        "HEX" => LanguageType::Hex,
-        "HLSL" => LanguageType::Hlsl,
-        "HolyC" => LanguageType::HolyC,
-        "HTML" => LanguageType::Html,
-        "Idris" => LanguageType::Idris,
-        "INI" => LanguageType::Ini,
-        "Intel HEX" => LanguageType::IntelHex,
-        "Isabelle" => LanguageType::Isabelle,
-        "JAI" => LanguageType::Jai,
-        "Java" => LanguageType::Java,
-        "JavaScript" => LanguageType::JavaScript,
-        "JSON" => LanguageType::Json,
-        "Jsonnet" => LanguageType::Jsonnet,
-        "JSX" => LanguageType::Jsx,
-        "Julia" => LanguageType::Julia,
-        "Julius" => LanguageType::Julius,
-        "Jupyter Notebooks" => LanguageType::Jupyter,
-        "K" => LanguageType::K,
-        "Kakoune script" => LanguageType::KakouneScript,
-        "Kotlin" => LanguageType::Kotlin,
-        "LLVM" => LanguageType::LLVM,
-        "Lean" => LanguageType::Lean,
-        "LESS" => LanguageType::Less,
-        "LD Script" => LanguageType::LinkerScript,
-        "Liquid" => LanguageType::Liquid,
-        "Lisp" => LanguageType::Lisp,
-        "LiveScript" => LanguageType::LiveScript,
-        "Logtalk" => LanguageType::Logtalk,
-        "Lua" => LanguageType::Lua,
-        "Lucius" => LanguageType::Lucius,
-        "Madlang" => LanguageType::Madlang,
-        "Makefile" => LanguageType::Makefile,
-        "Markdown" => LanguageType::Markdown,
-        "Meson" => LanguageType::Meson,
-        "Mint" => LanguageType::Mint,
-        "Module-Definition" => LanguageType::ModuleDef,
-        "MoonScript" => LanguageType::MoonScript,
-        "MSBuild" => LanguageType::MsBuild,
-        "Mustache" => LanguageType::Mustache,
-        "Nim" => LanguageType::Nim,
-        "Nix" => LanguageType::Nix,
-        "Not Quite Perl" => LanguageType::NotQuitePerl,
-        "OCaml" => LanguageType::OCaml,
-        "Objective-C" => LanguageType::ObjectiveC,
-        "Objective-C++" => LanguageType::ObjectiveCpp,
-        "Odin" => LanguageType::Odin,
-        "OpenType Feature File" => LanguageType::OpenType,
-        "Org" => LanguageType::Org,
-        "Oz" => LanguageType::Oz,
-        "PSL Assertion" => LanguageType::PSL,
-        "Pan" => LanguageType::Pan,
-        "Pascal" => LanguageType::Pascal,
-        "Perl" => LanguageType::Perl,
-        "Rakudo" => LanguageType::Perl6,
-        "Pest" => LanguageType::Pest,
-        "PHP" => LanguageType::Php,
-        "Polly" => LanguageType::Polly,
-        "Pony" => LanguageType::Pony,
-        "PostCSS" => LanguageType::PostCss,
-        "PowerShell" => LanguageType::PowerShell,
-        "Processing" => LanguageType::Processing,
-        "Prolog" => LanguageType::Prolog,
-        "Protocol Buffers" => LanguageType::Protobuf,
-        "Pug" => LanguageType::Pug,
-        "PureScript" => LanguageType::PureScript,
-        "Python" => LanguageType::Python,
-        "Q" => LanguageType::Q,
-        "QCL" => LanguageType::Qcl,
-        "QML" => LanguageType::Qml,
-        "R" => LanguageType::R,
-        "Rusty Object Notation" => LanguageType::RON,
-        "RPM Specfile" => LanguageType::RPMSpecfile,
-        "Racket" => LanguageType::Racket,
-        "Rakefile" => LanguageType::Rakefile,
-        "Razor" => LanguageType::Razor,
-        "ReStructuredText" => LanguageType::ReStructuredText,
-        "Ren'Py" => LanguageType::Renpy,
-        "Ruby" => LanguageType::Ruby,
-        "Ruby HTML" => LanguageType::RubyHtml,
-        "Rust" => LanguageType::Rust,
-        "SRecode Template" => LanguageType::SRecode,
-        "Sass" => LanguageType::Sass,
-        "Scala" => LanguageType::Scala,
-        "Scheme" => LanguageType::Scheme,
-        "Scons" => LanguageType::Scons,
-        "Shell" => LanguageType::Sh,
-        "Standard ML (SML)" => LanguageType::Sml,
-        "Solidity" => LanguageType::Solidity,
-        "Specman e" => LanguageType::SpecmanE,
-        "Spice Netlist" => LanguageType::Spice,
-        "SQL" => LanguageType::Sql,
-        "Stan" => LanguageType::Stan,
-        "Stratego/XT" => LanguageType::Stratego,
-        "Stylus" => LanguageType::Stylus,
-        "Svelte" => LanguageType::Svelte,
-        "SVG" => LanguageType::Svg,
-        "Swift" => LanguageType::Swift,
-        "SWIG" => LanguageType::Swig,
-        "SystemVerilog" => LanguageType::SystemVerilog,
-        "TCL" => LanguageType::Tcl,
-        "Tera" => LanguageType::Tera,
-        "TeX" => LanguageType::Tex,
-        "Plain Text" => LanguageType::Text,
-        "Thrift" => LanguageType::Thrift,
-        "TOML" => LanguageType::Toml,
-        "TSX" => LanguageType::Tsx,
-        "TTCN-3" => LanguageType::Ttcn,
-        "Twig" => LanguageType::Twig,
-        "TypeScript" => LanguageType::TypeScript,
-        "Unreal Markdown" => LanguageType::UnrealDeveloperMarkdown,
-        "Unreal Plugin" => LanguageType::UnrealPlugin,
-        "Unreal Project" => LanguageType::UnrealProject,
-        "Unreal Script" => LanguageType::UnrealScript,
-        "Unreal Shader" => LanguageType::UnrealShader,
-        "Unreal Shader Header" => LanguageType::UnrealShaderHeader,
-        "Ur/Web" => LanguageType::UrWeb,
-        "Ur/Web Project" => LanguageType::UrWebProject,
-        "VB6" => LanguageType::VB6,
-        "VBScript" => LanguageType::VBScript,
-        "Vala" => LanguageType::Vala,
-        "Apache Velocity" => LanguageType::Velocity,
-        "Verilog" => LanguageType::Verilog,
-        "Verilog Args File" => LanguageType::VerilogArgsFile,
-        "VHDL" => LanguageType::Vhdl,
-        "Vim script" => LanguageType::VimScript,
-        "Visual Basic" => LanguageType::VisualBasic,
-        "Visual Studio Project" => LanguageType::VisualStudioProject,
-        "Visual Studio Solution" => LanguageType::VisualStudioSolution,
-        "Vue" => LanguageType::Vue,
-        "WebAssembly" => LanguageType::WebAssembly,
-        "Wolfram" => LanguageType::Wolfram,
-        "XSL" => LanguageType::XSL,
-        "XAML" => LanguageType::Xaml,
-        "Xcode Config" => LanguageType::XcodeConfig,
-        "XML" => LanguageType::Xml,
-        "Xtend" => LanguageType::Xtend,
-        "YAML" => LanguageType::Yaml,
-        "Zig" => LanguageType::Zig,
-        "Zsh" => LanguageType::Zsh,
-        // THIS IS BAD, YET TO DECIDE WHAT TO DO.
-        &_ => LanguageType::ABNF,
+        "ABNF" => Ok(LanguageType::ABNF),
+        "Abap" => Ok(LanguageType::Abap),
+        "ActionScript" => Ok(LanguageType::ActionScript),
+        "Ada" => Ok(LanguageType::Ada),
+        "Agda" => Ok(LanguageType::Agda),
+        "Alex" => Ok(LanguageType::Alex),
+        "Alloy" => Ok(LanguageType::Alloy),
+        "Arduino C++" => Ok(LanguageType::Arduino),
+        "AsciiDoc" => Ok(LanguageType::AsciiDoc),
+        "ASN.1" => Ok(LanguageType::Asn1),
+        "ASP" => Ok(LanguageType::Asp),
+        "ASP.NET" => Ok(LanguageType::AspNet),
+        "Assembly" => Ok(LanguageType::Assembly),
+        "GNU Style Assembly" => Ok(LanguageType::AssemblyGAS),
+        "AutoHotKey" => Ok(LanguageType::AutoHotKey),
+        "Autoconf" => Ok(LanguageType::Autoconf),
+        "Automake" => Ok(LanguageType::Automake),
+        "BASH" => Ok(LanguageType::Bash),
+        "Batch" => Ok(LanguageType::Batch),
+        "Bean" => Ok(LanguageType::Bean),
+        "BrightScript" => Ok(LanguageType::BrightScript),
+        "C" => Ok(LanguageType::C),
+        "C Header" => Ok(LanguageType::CHeader),
+        "CMake" => Ok(LanguageType::CMake),
+        "C#" => Ok(LanguageType::CSharp),
+        "C Shell" => Ok(LanguageType::CShell),
+        "Cabal" => Ok(LanguageType::Cabal),
+        "Cassius" => Ok(LanguageType::Cassius),
+        "Ceylon" => Ok(LanguageType::Ceylon),
+        "Clojure" => Ok(LanguageType::Clojure),
+        "ClojureC" => Ok(LanguageType::ClojureC),
+        "ClojureScript" => Ok(LanguageType::ClojureScript),
+        "COBOL" => Ok(LanguageType::Cobol),
+        "CodeQL" => Ok(LanguageType::CodeQL),
+        "CoffeeScript" => Ok(LanguageType::CoffeeScript),
+        "Cogent" => Ok(LanguageType::Cogent),
+        "ColdFusion" => Ok(LanguageType::ColdFusion),
+        "ColdFusion CFScript" => Ok(LanguageType::ColdFusionScript),
+        "Coq" => Ok(LanguageType::Coq),
+        "C++" => Ok(LanguageType::Cpp),
+        "C++ Header" => Ok(LanguageType::CppHeader),
+        "Crystal" => Ok(LanguageType::Crystal),
+        "CSS" => Ok(LanguageType::Css),
+        "D" => Ok(LanguageType::D),
+        "DAML" => Ok(LanguageType::Daml),
+        "Dart" => Ok(LanguageType::Dart),
+        "Device Tree" => Ok(LanguageType::DeviceTree),
+        "Dhall" => Ok(LanguageType::Dhall),
+        "Dockerfile" => Ok(LanguageType::Dockerfile),
+        ".NET Resource" => Ok(LanguageType::DotNetResource),
+        "Dream Maker" => Ok(LanguageType::DreamMaker),
+        "Dust.js" => Ok(LanguageType::Dust),
+        "Edn" => Ok(LanguageType::Edn),
+        "Emacs Lisp" => Ok(LanguageType::Elisp),
+        "Elixir" => Ok(LanguageType::Elixir),
+        "Elm" => Ok(LanguageType::Elm),
+        "Elvish" => Ok(LanguageType::Elvish),
+        "Emacs Dev Env" => Ok(LanguageType::EmacsDevEnv),
+        "Emojicode" => Ok(LanguageType::Emojicode),
+        "Erlang" => Ok(LanguageType::Erlang),
+        "FEN" => Ok(LanguageType::FEN),
+        "F#" => Ok(LanguageType::FSharp),
+        "Fish" => Ok(LanguageType::Fish),
+        "FlatBuffers Schema" => Ok(LanguageType::FlatBuffers),
+        "Forth" => Ok(LanguageType::Forth),
+        "FORTRAN Legacy" => Ok(LanguageType::FortranLegacy),
+        "FORTRAN Modern" => Ok(LanguageType::FortranModern),
+        "FreeMarker" => Ok(LanguageType::FreeMarker),
+        "F*" => Ok(LanguageType::Fstar),
+        "Futhark" => Ok(LanguageType::Futhark),
+        "GDB Script" => Ok(LanguageType::GDB),
+        "GDScript" => Ok(LanguageType::GdScript),
+        "Gherkin (Cucumber)" => Ok(LanguageType::Gherkin),
+        "Gleam" => Ok(LanguageType::Gleam),
+        "GLSL" => Ok(LanguageType::Glsl),
+        "Go" => Ok(LanguageType::Go),
+        "Go HTML" => Ok(LanguageType::Gohtml),
+        "GraphQL" => Ok(LanguageType::Graphql),
+        "Groovy" => Ok(LanguageType::Groovy),
+        "Gwion" => Ok(LanguageType::Gwion),
+        "Hamlet" => Ok(LanguageType::Hamlet),
+        "Handlebars" => Ok(LanguageType::Handlebars),
+        "Happy" => Ok(LanguageType::Happy),
+        "Haskell" => Ok(LanguageType::Haskell),
+        "Haxe" => Ok(LanguageType::Haxe),
+        "HCL" => Ok(LanguageType::Hcl),
+        "Headache" => Ok(LanguageType::Headache),
+        "HEX" => Ok(LanguageType::Hex),
+        "HLSL" => Ok(LanguageType::Hlsl),
+        "HolyC" => Ok(LanguageType::HolyC),
+        "HTML" => Ok(LanguageType::Html),
+        "Idris" => Ok(LanguageType::Idris),
+        "INI" => Ok(LanguageType::Ini),
+        "Intel HEX" => Ok(LanguageType::IntelHex),
+        "Isabelle" => Ok(LanguageType::Isabelle),
+        "JAI" => Ok(LanguageType::Jai),
+        "Java" => Ok(LanguageType::Java),
+        "JavaScript" => Ok(LanguageType::JavaScript),
+        "JSON" => Ok(LanguageType::Json),
+        "Jsonnet" => Ok(LanguageType::Jsonnet),
+        "JSX" => Ok(LanguageType::Jsx),
+        "Julia" => Ok(LanguageType::Julia),
+        "Julius" => Ok(LanguageType::Julius),
+        "Jupyter Notebooks" => Ok(LanguageType::Jupyter),
+        "K" => Ok(LanguageType::K),
+        "Kakoune script" => Ok(LanguageType::KakouneScript),
+        "Kotlin" => Ok(LanguageType::Kotlin),
+        "LLVM" => Ok(LanguageType::LLVM),
+        "Lean" => Ok(LanguageType::Lean),
+        "LESS" => Ok(LanguageType::Less),
+        "LD Script" => Ok(LanguageType::LinkerScript),
+        "Liquid" => Ok(LanguageType::Liquid),
+        "Lisp" => Ok(LanguageType::Lisp),
+        "LiveScript" => Ok(LanguageType::LiveScript),
+        "Logtalk" => Ok(LanguageType::Logtalk),
+        "Lua" => Ok(LanguageType::Lua),
+        "Lucius" => Ok(LanguageType::Lucius),
+        "Madlang" => Ok(LanguageType::Madlang),
+        "Makefile" => Ok(LanguageType::Makefile),
+        "Markdown" => Ok(LanguageType::Markdown),
+        "Meson" => Ok(LanguageType::Meson),
+        "Mint" => Ok(LanguageType::Mint),
+        "Module-Definition" => Ok(LanguageType::ModuleDef),
+        "MoonScript" => Ok(LanguageType::MoonScript),
+        "MSBuild" => Ok(LanguageType::MsBuild),
+        "Mustache" => Ok(LanguageType::Mustache),
+        "Nim" => Ok(LanguageType::Nim),
+        "Nix" => Ok(LanguageType::Nix),
+        "Not Quite Perl" => Ok(LanguageType::NotQuitePerl),
+        "OCaml" => Ok(LanguageType::OCaml),
+        "Objective-C" => Ok(LanguageType::ObjectiveC),
+        "Objective-C++" => Ok(LanguageType::ObjectiveCpp),
+        "Odin" => Ok(LanguageType::Odin),
+        "OpenType Feature File" => Ok(LanguageType::OpenType),
+        "Org" => Ok(LanguageType::Org),
+        "Oz" => Ok(LanguageType::Oz),
+        "PSL Assertion" => Ok(LanguageType::PSL),
+        "Pan" => Ok(LanguageType::Pan),
+        "Pascal" => Ok(LanguageType::Pascal),
+        "Perl" => Ok(LanguageType::Perl),
+        "Rakudo" => Ok(LanguageType::Perl6),
+        "Pest" => Ok(LanguageType::Pest),
+        "PHP" => Ok(LanguageType::Php),
+        "Polly" => Ok(LanguageType::Polly),
+        "Pony" => Ok(LanguageType::Pony),
+        "PostCSS" => Ok(LanguageType::PostCss),
+        "PowerShell" => Ok(LanguageType::PowerShell),
+        "Processing" => Ok(LanguageType::Processing),
+        "Prolog" => Ok(LanguageType::Prolog),
+        "Protocol Buffers" => Ok(LanguageType::Protobuf),
+        "Pug" => Ok(LanguageType::Pug),
+        "PureScript" => Ok(LanguageType::PureScript),
+        "Python" => Ok(LanguageType::Python),
+        "Q" => Ok(LanguageType::Q),
+        "QCL" => Ok(LanguageType::Qcl),
+        "QML" => Ok(LanguageType::Qml),
+        "R" => Ok(LanguageType::R),
+        "Rusty Object Notation" => Ok(LanguageType::RON),
+        "RPM Specfile" => Ok(LanguageType::RPMSpecfile),
+        "Racket" => Ok(LanguageType::Racket),
+        "Rakefile" => Ok(LanguageType::Rakefile),
+        "Razor" => Ok(LanguageType::Razor),
+        "ReStructuredText" => Ok(LanguageType::ReStructuredText),
+        "Ren'Py" => Ok(LanguageType::Renpy),
+        "Ruby" => Ok(LanguageType::Ruby),
+        "Ruby HTML" => Ok(LanguageType::RubyHtml),
+        "Rust" => Ok(LanguageType::Rust),
+        "SRecode Template" => Ok(LanguageType::SRecode),
+        "Sass" => Ok(LanguageType::Sass),
+        "Scala" => Ok(LanguageType::Scala),
+        "Scheme" => Ok(LanguageType::Scheme),
+        "Scons" => Ok(LanguageType::Scons),
+        "Shell" => Ok(LanguageType::Sh),
+        "Standard ML (SML)" => Ok(LanguageType::Sml),
+        "Solidity" => Ok(LanguageType::Solidity),
+        "Specman e" => Ok(LanguageType::SpecmanE),
+        "Spice Netlist" => Ok(LanguageType::Spice),
+        "SQL" => Ok(LanguageType::Sql),
+        "Stan" => Ok(LanguageType::Stan),
+        "Stratego/XT" => Ok(LanguageType::Stratego),
+        "Stylus" => Ok(LanguageType::Stylus),
+        "Svelte" => Ok(LanguageType::Svelte),
+        "SVG" => Ok(LanguageType::Svg),
+        "Swift" => Ok(LanguageType::Swift),
+        "SWIG" => Ok(LanguageType::Swig),
+        "SystemVerilog" => Ok(LanguageType::SystemVerilog),
+        "TCL" => Ok(LanguageType::Tcl),
+        "Tera" => Ok(LanguageType::Tera),
+        "TeX" => Ok(LanguageType::Tex),
+        "Plain Text" => Ok(LanguageType::Text),
+        "Thrift" => Ok(LanguageType::Thrift),
+        "TOML" => Ok(LanguageType::Toml),
+        "TSX" => Ok(LanguageType::Tsx),
+        "TTCN-3" => Ok(LanguageType::Ttcn),
+        "Twig" => Ok(LanguageType::Twig),
+        "TypeScript" => Ok(LanguageType::TypeScript),
+        "Unreal Markdown" => Ok(LanguageType::UnrealDeveloperMarkdown),
+        "Unreal Plugin" => Ok(LanguageType::UnrealPlugin),
+        "Unreal Project" => Ok(LanguageType::UnrealProject),
+        "Unreal Script" => Ok(LanguageType::UnrealScript),
+        "Unreal Shader" => Ok(LanguageType::UnrealShader),
+        "Unreal Shader Header" => Ok(LanguageType::UnrealShaderHeader),
+        "Ur/Web" => Ok(LanguageType::UrWeb),
+        "Ur/Web Project" => Ok(LanguageType::UrWebProject),
+        "VB6" => Ok(LanguageType::VB6),
+        "VBScript" => Ok(LanguageType::VBScript),
+        "Vala" => Ok(LanguageType::Vala),
+        "Apache Velocity" => Ok(LanguageType::Velocity),
+        "Verilog" => Ok(LanguageType::Verilog),
+        "Verilog Args File" => Ok(LanguageType::VerilogArgsFile),
+        "VHDL" => Ok(LanguageType::Vhdl),
+        "Vim script" => Ok(LanguageType::VimScript),
+        "Visual Basic" => Ok(LanguageType::VisualBasic),
+        "Visual Studio Project" => Ok(LanguageType::VisualStudioProject),
+        "Visual Studio Solution" => Ok(LanguageType::VisualStudioSolution),
+        "Vue" => Ok(LanguageType::Vue),
+        "WebAssembly" => Ok(LanguageType::WebAssembly),
+        "Wolfram" => Ok(LanguageType::Wolfram),
+        "XSL" => Ok(LanguageType::XSL),
+        "XAML" => Ok(LanguageType::Xaml),
+        "Xcode Config" => Ok(LanguageType::XcodeConfig),
+        "XML" => Ok(LanguageType::Xml),
+        "Xtend" => Ok(LanguageType::Xtend),
+        "YAML" => Ok(LanguageType::Yaml),
+        "Zig" => Ok(LanguageType::Zig),
+        "Zsh" => Ok(LanguageType::Zsh),
+        _ => Err(PyValueError::new_err(format!(
+            "LanguageType not found: {}",
+            lang_type
+        ))),
     }
 }
 
@@ -263,10 +252,7 @@ pub struct PyLanguageType(pub LanguageType);
 impl PyLanguageType {
     #[new]
     pub fn new(lang_type_name: &str) -> PyResult<Self> {
-        Ok(
-            //            LanguageTypeContainer(lang_type_map(lang_type_name))
-            PyLanguageType(map_lang_type(lang_type_name)),
-        )
+        Ok(PyLanguageType(language_type_mapper(lang_type_name)?))
     }
 
     pub fn __hash__(&self) -> u64 {
@@ -293,18 +279,68 @@ impl PyLanguageType {
     pub fn name(&self) -> String {
         self.0.name().to_string()
     }
+
+//    pub fn list(&self) ->
+    /* TO BE DEVELOPED YET
+    pub fn is_literate(&self) -> bool {
+        1
+    }
+
+    pub fn line_comments(&self) -> bool {
+        1
+    }
+
+    pub fn multi_line_comments(&self) -> bool {
+        1
+    }
+
+    pub fn allows_nested(&self) -> bool {
+        1
+    }
+
+    pub fn nested_comments(&self) -> bool {
+        1
+    }
+
+    pub fn quotes(&self) -> bool {
+        1
+    }
+
+    pub fn verbatim_quotes(&self) -> bool {
+        1
+    }
+
+    pub fn doc_quotes(&self) -> bool {
+        1
+    }
+
+    pub fn shebangs(&self) -> bool {
+        1
+    }
+
+    pub fn important_syntax(&self) -> bool {
+        1
+    }
+
+    pub fn from_file_extension(&self) -> bool {
+        1
+    }
+
+    pub fn from_mime(&self) -> bool {
+        1
+    }
+
+    pub fn from_shebang(&self) -> bool {
+        1
+    }
+    */
 }
 
 #[pyfunction]
-pub fn language_types() -> HashMap<&'static str, PyLanguageType> {
-    //pub fn language_types() -> HashMap<&'static str, &'static str> {
-    //pub fn language_types() -> HashMap<String, String> {
-    let mut lang_types = HashMap::new();
-
+pub fn language_types() -> Vec<&'static str> {
+    let mut lang_types = Vec::new();
     for l in LanguageType::list() {
-        lang_types.insert(l.name(), PyLanguageType(map_lang_type(l.name())));
-        //        lang_types.insert(l.name(), l.name());
+        lang_types.push(l.name());
     }
-
     lang_types
 }
