@@ -33,6 +33,14 @@ impl PyCodeStats {
         self.stats.comments
     }
 
+    /*
+    // Translate the inner object
+    #[getter]
+    pub fn blobs(&self) -> usize {
+        self.stats.blobs
+    }
+    */
+
     pub fn lines(&self) -> usize {
         self.stats.lines()
     }
@@ -47,7 +55,8 @@ impl PyCodeStats {
         return new_stats;
     }
 
-    pub fn content(&self) -> PyResult<PyObject> {
+    pub fn content(&self) -> HashMap<&'static str, usize> {
+        //    pub fn content(&self) -> PyResult<PyObject> {
         // Obtain the inner content as a dict in Python.
         let map = HashMap::from([
             ("blanks", self.blanks()),
@@ -55,7 +64,8 @@ impl PyCodeStats {
             ("comments", self.comments()),
             ("lines", self.lines()),
         ]);
-        return pyo3::Python::with_gil(|py| Ok(map.to_object(py)));
+        map
+        //        return pyo3::Python::with_gil(|py| Ok(map.to_object(py)));
     }
 
     pub fn __repr__(&self) -> PyResult<String> {
@@ -100,5 +110,13 @@ impl PyReport {
 
     pub fn __repr__(&self) -> PyResult<String> {
         Ok(format!("Report({:?})", self.name()))
+    }
+
+    pub fn plain(&self) -> HashMap<String, HashMap<&'static str, usize>> {
+        let map = HashMap::from([(
+            self.name().into_os_string().into_string().unwrap(),
+            self.stats().content(),
+        )]);
+        map
     }
 }
