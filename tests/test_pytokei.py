@@ -135,19 +135,18 @@ class TestLanguages:
 class TestLanguageType:
     def test_language_types(self):
         lang_types = tokei.language_types()
-        assert isinstance(lang_types, dict)
-
-    def test_py_language(self):
-        python = tokei.language_types()["Python"]
-        assert isinstance(python, tokei.LanguageType)
+        assert isinstance(lang_types, list)
 
     def test_repr(self):
-        python = tokei.language_types()["Python"]
+        python = tokei.LanguageType("Python")
         assert repr(python) == "LanguageType(Python)"
 
     def test_name(self):
         assert "Python" == tokei.LanguageType("Python").name()
 
+    def test_for_error(self):
+        with pytest.raises(ValueError):
+            tokei.LanguageType("inexistent")
 
 class TestLanguage:
     @pytest.fixture
@@ -238,8 +237,11 @@ class TestPytokei:
     def test_language_get_reports_plain(self, languages):
         reports_plain = languages.get_languages()[tokei.LanguageType("Python")].reports_plain()
         assert isinstance(reports_plain, list)
-        print(reports_plain)
-        assert all([isinstance(r, tokei.Report) for r in reports_plain])
+        print(reports_plain[0])
+        assert all([isinstance(r, dict) for r in reports_plain])
+        assert len(reports_plain) == 2
+        filename = list(reports_plain[0].keys())[0]
+        assert reports_plain[0][filename] == {'lines': 15, 'blanks': 3, 'code': 10, 'comments': 2}
 
     def test_language_get_children(self, languages):
         lang = languages.total()
