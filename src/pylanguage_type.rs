@@ -289,6 +289,10 @@ impl PyLanguageType {
     pub fn __repr__(&self) -> PyResult<String> {
         Ok(format!("LanguageType({:#?})", self.0))
     }
+
+    pub fn name(&self) -> String {
+        self.0.name().to_string()
+    }
 }
 
 #[pyfunction]
