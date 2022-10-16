@@ -77,16 +77,30 @@ impl PyLanguages {
         let map: HashMap<PyLanguageType, PyLanguage> = self
             .languages
             .iter()
-            .map(|(x, y)| (PyLanguageType(x.clone()), PyLanguage { language: y.clone() }))
+            .map(|(x, y)| {
+                (
+                    PyLanguageType(x.clone()),
+                    PyLanguage {
+                        language: y.clone(),
+                    },
+                )
+            })
             .collect();
         map
     }
 
+    // Equivalent to get_languages but returns the objects in plain python objects
+    // instead of wrapped in classes
+    // TODO: First treat the other classes to simplify getting them here.
     /*
-    pub fn get_languages_plain(&self) -> {
-        /* Equivalent to get_languages but returns the objects in plain python objects
-        instead of wrapped in classes
-        */
+    pub fn get_languages_plain(&self) -> HashMap<&'static str, &'static str> {
+        let map: HashMap<PyLanguageType, PyLanguage> = self
+            .languages
+            .iter()
+            .map(|(x, y)| (PyLanguageType(x.clone()), PyLanguage { language: y.clone() }))
+            .collect();
+        map
+
     }
     */
 }
