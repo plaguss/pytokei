@@ -55,7 +55,7 @@ impl PyCodeStats {
         return new_stats;
     }
 
-    pub fn content(&self) -> HashMap<&'static str, usize> {
+    pub fn plain(&self) -> HashMap<&'static str, usize> {
         //    pub fn content(&self) -> PyResult<PyObject> {
         // Obtain the inner content as a dict in Python.
         let map = HashMap::from([
@@ -115,7 +115,7 @@ impl PyReport {
     pub fn plain(&self) -> HashMap<String, HashMap<&'static str, usize>> {
         let map = HashMap::from([(
             self.name().into_os_string().into_string().unwrap(),
-            self.stats().content(),
+            self.stats().plain(),
         )]);
         map
     }

@@ -21,6 +21,14 @@ class TestConfig:
     def test_columns(self, conf):
         assert conf.columns is None
 
+    @pytest.mark.skip
+    def test_repr(self, conf):
+        pass
+
+    @pytest.mark.skip
+    def test_read_from_file(self, conf):
+        pass
+
 
 class TestSort:
     @pytest.fixture
@@ -61,8 +69,8 @@ class TestCodeStats:
     def test_summarise(self, stats):
         assert isinstance(stats.summarise(), tokei.CodeStats)
 
-    def test_content(self, stats):
-        assert stats.content() == {"blanks": 0, "code": 0, "comments": 0, "lines": 0}
+    def test_stats_plain(self, stats):
+        assert stats.plain() == {"blanks": 0, "code": 0, "comments": 0, "lines": 0}
 
     def test_repr(self, stats):
         assert repr(stats) == "CodeStats(blanks: 0, code: 0, comments: 0, lines: 0)"
@@ -90,9 +98,8 @@ class TestReport:
         plain = report.plain()
         assert isinstance(plain, dict)
         filename = list(plain.keys())[0]
-        assert filename.endswith('Dockerfile')
+        assert filename.endswith("Dockerfile")
         assert plain[filename] == {"blanks": 0, "code": 0, "comments": 0, "lines": 0}
-
 
 
 class TestLanguages:
@@ -160,10 +167,12 @@ class TestLanguage:
     def test_is_empty(self, language):
         assert language.is_empty() is True
 
+
 # TODO: Needs checks for possible errors.
 
-# These should be considered integration tests, need the 
+# These should be considered integration tests, need the
 # code to be run on real data for proper testing.
+
 
 class TestPytokei:
     # Test for errors on paths
@@ -175,7 +184,7 @@ class TestPytokei:
 
     def test_access_parsed_languages(self, languages):
         langs = languages.language_names()
-        assert langs == {'Dockerfile', 'Python', 'Rust'}
+        assert langs == {"Dockerfile", "Python", "Rust", "TOML"}
 
     def test_languages_getitem(self, languages):
         lang = languages[tokei.LanguageType("Dockerfile")]
@@ -189,14 +198,22 @@ class TestPytokei:
         assert isinstance(list(inner.keys())[0], tokei.LanguageType)
         assert isinstance(list(inner.values())[0], tokei.Language)
 
-    @pytest.mark.skip
-    def test_languages_by_file(self):
-        pass
-
     def test_language_total(self, languages):
         lang = languages.total()
         assert isinstance(lang, tokei.Language)
 
     @pytest.mark.skip
-    def test_language_sort_by(self):
+    def test_languages_by_file(self):
+        pass
+
+    @pytest.mark.skip
+    def test_language_sort_by(self, languages):
+        pass
+
+    @pytest.mark.skip
+    def test_language_get_reports_plain(self):
+        pass
+
+    @pytest.mark.skip
+    def test_language_get_children_plain(self):
         pass
