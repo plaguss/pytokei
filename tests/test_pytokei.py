@@ -162,23 +162,25 @@ class TestPytokei:
         langs = languages.language_names()
         assert langs == {'Dockerfile', 'Python', 'Rust'}
 
-    def test_languages_getattr(self, languages):
+    def test_languages_getitem(self, languages):
         lang = languages[tokei.LanguageType("Dockerfile")]
         assert isinstance(lang, tokei.Language)
         with pytest.raises(ValueError):
             languages[tokei.LanguageType("Java")]
 
+    def test_get_languages(self, languages):
+        inner = languages.get_languages()
+        assert isinstance(inner, dict)
+        assert isinstance(list(inner.keys())[0], tokei.LanguageType)
+        assert isinstance(list(inner.values())[0], tokei.Language)
+
     @pytest.mark.skip
     def test_languages_by_file(self):
         pass
 
-    @pytest.mark.skip
-    def test_languages_summary(self):
-        pass
-
-    @pytest.mark.skip
-    def test_language_total(self):
-        pass
+    def test_language_total(self, languages):
+        lang = languages.total()
+        assert isinstance(lang, tokei.Language)
 
     @pytest.mark.skip
     def test_language_sort_by(self):
