@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use tokei::{CodeStats, Report};
 
+use crate::pylanguage_type::PyLanguageType;
+
 #[derive(Clone)]
 #[pyclass(name = "CodeStats")]
 pub struct PyCodeStats {
@@ -33,13 +35,22 @@ impl PyCodeStats {
         self.stats.comments
     }
 
-    /*
     // Translate the inner object
     #[getter]
-    pub fn blobs(&self) -> usize {
-        self.stats.blobs
+    pub fn blobs(&self) -> HashMap<PyLanguageType, PyCodeStats> {
+        let map: HashMap<PyLanguageType, PyCodeStats> = self
+            .stats
+            .blobs
+            .iter()
+            .map(|(ltype, cstats)| {
+                (
+                    PyLanguageType(ltype.clone()),
+                    PyCodeStats { stats: cstats.clone() },
+                )
+            })
+            .collect();
+        map
     }
-    */
 
     pub fn lines(&self) -> usize {
         self.stats.lines()
@@ -56,7 +67,6 @@ impl PyCodeStats {
     }
 
     pub fn plain(&self) -> HashMap<&'static str, usize> {
-        //    pub fn content(&self) -> PyResult<PyObject> {
         // Obtain the inner content as a dict in Python.
         let map = HashMap::from([
             ("blanks", self.blanks()),
@@ -65,7 +75,6 @@ impl PyCodeStats {
             ("lines", self.lines()),
         ]);
         map
-        //        return pyo3::Python::with_gil(|py| Ok(map.to_object(py)));
     }
 
     pub fn __repr__(&self) -> PyResult<String> {
@@ -77,6 +86,9 @@ impl PyCodeStats {
             self.lines()
         ))
     }
+
+    // Return the same object with python base objects
+    //pub fn blobs_plain(&self) -> {}
 }
 
 #[derive(Clone)]
