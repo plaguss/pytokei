@@ -5,8 +5,8 @@ use pyo3::prelude::*;
 use tokei::Language;
 
 use crate::pylanguage_type::PyLanguageType;
-use crate::pystats::PyReport;
 use crate::pysort::PySort;
+use crate::pystats::PyReport;
 
 #[pyclass(name = "Language")]
 pub struct PyLanguage {
@@ -80,7 +80,9 @@ impl PyLanguage {
     }
 
     pub fn summarise(&self) -> PyLanguage {
-        PyLanguage{language: self.language.summarise()}
+        PyLanguage {
+            language: self.language.summarise(),
+        }
     }
 
     pub fn total(&mut self) {
@@ -94,5 +96,4 @@ impl PyLanguage {
     pub fn sort_by(&mut self, category: PySort) {
         self.language.sort_by(category.sort);
     }
-
 }
