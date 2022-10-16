@@ -86,6 +86,14 @@ class TestReport:
         assert repr_str.startswith("Report(")
         assert repr_str.endswith('Dockerfile")')
 
+    def test_report_plain(self, report):
+        plain = report.plain()
+        assert isinstance(plain, dict)
+        filename = list(plain.keys())[0]
+        assert filename.endswith('Dockerfile')
+        assert plain[filename] == {"blanks": 0, "code": 0, "comments": 0, "lines": 0}
+
+
 
 class TestLanguages:
     @pytest.fixture
