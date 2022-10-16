@@ -45,7 +45,37 @@ impl PyCodeStats {
             .map(|(ltype, cstats)| {
                 (
                     PyLanguageType(ltype.clone()),
-                    PyCodeStats { stats: cstats.clone() },
+                    PyCodeStats {
+                        stats: cstats.clone(),
+                    },
+                )
+            })
+            .collect();
+        map
+    }
+
+    /*
+        pub fn plain(&self) -> HashMap<String, HashMap<&'static str, usize>> {
+        let map = HashMap::from([(
+            self.name().into_os_string().into_string().unwrap(),
+            self.stats().plain(),
+        )]);
+        map
+    }
+    */
+
+    pub fn blobs_plain(&self) -> HashMap<&'static str, HashMap<&'static str, usize>> {
+        let map = self
+            .stats
+            .blobs
+            .iter()
+            .map(|(ltype, cstats)| {
+                (
+                    ltype.name(),
+                    PyCodeStats {
+                        stats: cstats.clone(),
+                    }
+                    .plain(),
                 )
             })
             .collect();
