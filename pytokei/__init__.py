@@ -1,21 +1,21 @@
 from pytokei._pytokei import (
     CodeStats,
     Config,
+    Language,
     Languages,
     LanguageType,
     Report,
     Sort,
     language_types,
-    Language
 )
 
 __all__ = [
-    "Languages",
-    "Config",
-    "Sort",
     "CodeStats",
-    "language_types",
+    "Config",
+    "Language",
+    "Languages",
     "LanguageType",
     "Report",
-    "Language"
+    "Sort",
+    "language_types",
 ]
