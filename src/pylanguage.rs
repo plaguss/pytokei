@@ -8,6 +8,9 @@ use crate::pylanguage_type::PyLanguageType;
 use crate::pysort::PySort;
 use crate::pystats::PyReport;
 
+type LanguageChildrenPlain = HashMap<String, Vec<HashMap<String, HashMap<&'static str, usize>>>>;
+
+
 #[pyclass(name = "Language")]
 pub struct PyLanguage {
     pub language: Language,
@@ -66,7 +69,18 @@ impl PyLanguage {
         children
     }
 
-//    pub fn children_plain(&self) {}
+    pub fn children_plain(&self) -> LanguageChildrenPlain {
+        let children_ = self.children();
+        let mut children_plain = HashMap::new();
+        for (py_lang_type, py_reports) in children_.iter() {
+            let mut pyreports_plain = Vec::new();
+            for r in py_reports.iter() {
+                pyreports_plain.push(r.plain());
+            }
+            children_plain.insert(py_lang_type.name(), pyreports_plain);
+        }
+        children_plain
+    }
 
     #[getter]
     pub fn inaccurate(&self) -> bool {
