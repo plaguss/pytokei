@@ -75,6 +75,11 @@ class TestCodeStats:
     def test_repr(self, stats):
         assert repr(stats) == "CodeStats(blanks: 0, code: 0, comments: 0, lines: 0)"
 
+    def test_blobs(self, stats):
+        blobs = stats.blobs
+        assert isinstance(blobs, dict)
+        assert len(blobs) == 0  # Without anything parsed has no content
+
 
 class TestReport:
     @pytest.fixture
@@ -115,7 +120,11 @@ class TestLanguages:
         ignore = "nothing"  # This should take also a null string
         conf = tokei.Config()
         languages.get_statistics(path, ignore, conf)
-        assert languages.language_names() == set(["Python", "Rust", "Dockerfile"])
+        assert languages.language_names() == set(["Python", "Rust", "Dockerfile", "TOML"])
+
+    @pytest.mark.skip
+    def test_languages_by_file(self):
+        pass
 
 
 class TestLanguageType:
@@ -126,6 +135,9 @@ class TestLanguageType:
     def test_py_language(self):
         python = tokei.language_types()["Python"]
         assert isinstance(python, tokei.LanguageType)
+
+    def test_repr(self):
+        python = tokei.language_types()["Python"]
         assert repr(python) == "LanguageType(Python)"
 
 
@@ -170,8 +182,8 @@ class TestLanguage:
 
 # TODO: Needs checks for possible errors.
 
-# These should be considered integration tests, need the
-# code to be run on real data for proper testing.
+# These should be considered integration tests, the code
+# to be run on real data for proper testing.
 
 
 class TestPytokei:
@@ -203,10 +215,6 @@ class TestPytokei:
         assert isinstance(lang, tokei.Language)
 
     @pytest.mark.skip
-    def test_languages_by_file(self):
-        pass
-
-    @pytest.mark.skip
     def test_language_sort_by(self, languages):
         pass
 
@@ -217,3 +225,10 @@ class TestPytokei:
     @pytest.mark.skip
     def test_language_get_children_plain(self):
         pass
+
+    @pytest.mark.skip
+    def test_blobs_from_code_stats(self):
+        blobs = 1
+        # TODO: If it fails, do this check once parsed
+        assert isinstance(list(blobs.keys())[0], tokei.LanguageType)
+        assert isinstance(list(blobs.values())[0], tokei.CodeStats)
