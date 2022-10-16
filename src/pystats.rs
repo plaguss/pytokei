@@ -54,16 +54,6 @@ impl PyCodeStats {
         map
     }
 
-    /*
-        pub fn plain(&self) -> HashMap<String, HashMap<&'static str, usize>> {
-        let map = HashMap::from([(
-            self.name().into_os_string().into_string().unwrap(),
-            self.stats().plain(),
-        )]);
-        map
-    }
-    */
-
     pub fn blobs_plain(&self) -> HashMap<&'static str, HashMap<&'static str, usize>> {
         let map = self
             .stats
@@ -117,8 +107,6 @@ impl PyCodeStats {
         ))
     }
 
-    // Return the same object with python base objects
-    //pub fn blobs_plain(&self) -> {}
 }
 
 #[derive(Clone)]
