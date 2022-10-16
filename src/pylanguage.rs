@@ -9,7 +9,7 @@ use crate::pysort::PySort;
 use crate::pystats::PyReport;
 
 type LanguageChildrenPlain = HashMap<String, Vec<HashMap<String, HashMap<&'static str, usize>>>>;
-
+type ReportsPlain = Vec<HashMap<String, HashMap<&'static str, usize>>>;
 
 #[pyclass(name = "Language")]
 pub struct PyLanguage {
@@ -52,6 +52,15 @@ impl PyLanguage {
             reports.push(PyReport { report: r.clone() });
         }
         reports
+    }
+
+    pub fn reports_plain(&self) -> ReportsPlain {
+        let mut reports_plain = Vec::new();
+        let reports = self.reports();
+        for r in &reports {
+            reports_plain.push(r.plain());
+        }
+        reports_plain
     }
 
     #[getter]

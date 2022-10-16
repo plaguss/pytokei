@@ -187,6 +187,8 @@ class TestLanguage:
     def test_is_empty(self, language):
         assert language.is_empty() is True
 
+    def test_repr(self, language):
+        assert repr(language) == "Language(empty: true)"
 
 # TODO: Needs checks for possible errors.
 
@@ -217,6 +219,8 @@ class TestPytokei:
         assert isinstance(inner, dict)
         assert isinstance(list(inner.keys())[0], tokei.LanguageType)
         assert isinstance(list(inner.values())[0], tokei.Language)
+        assert len(inner) == 4
+        assert all([~v.is_empty() for v in inner.values()])
 
     def test_language_total(self, languages):
         lang = languages.total()
@@ -226,24 +230,32 @@ class TestPytokei:
     def test_language_sort_by(self, languages):
         pass
 
-    @pytest.mark.skip
-    def test_language_get_reports_plain(self):
-        pass
+    def test_language_get_reports(self, languages):
+        reports = languages.get_languages()[tokei.LanguageType("Python")].reports
+        assert isinstance(reports, list)
+        assert all(isinstance(r, tokei.Report) for r in reports)
 
-    @pytest.mark.skip
-    def test_language_get_children_plain(self):
-        pass
+    def test_language_get_reports_plain(self, languages):
+        reports_plain = languages.get_languages()[tokei.LanguageType("Python")].reports_plain()
+        assert isinstance(reports_plain, list)
+        print(reports_plain)
+        assert all([isinstance(r, tokei.Report) for r in reports_plain])
 
-    @pytest.mark.skip
-    def test_blobs_from_code_stats(self):
-        blobs = 1
-        # TODO: If it fails, do this check once parsed
-        assert isinstance(list(blobs.keys())[0], tokei.LanguageType)
-        assert isinstance(list(blobs.values())[0], tokei.CodeStats)
+    def test_language_get_children(self, languages):
+        lang = languages.total()
+        children = lang.children
+        assert len(children) == 4
+        assert all(isinstance(k, tokei.LanguageType) for k in children.keys())
+        reports = children[tokei.LanguageType("Python")]
+        assert len(reports) == 2
+        assert all(isinstance(r, tokei.Report) for r in reports)
 
-    @pytest.mark.skip
-    def test_blobs_plain_from_code_stats(self):
-        blobs = 1
-        # TODO: If it fails, do this check once parsed
-        assert isinstance(list(blobs.keys())[0], tokei.LanguageType)
-        assert isinstance(list(blobs.values())[0], tokei.CodeStats)
+    def test_language_get_children_plain(self, languages):
+        lang = languages.total()
+        children_plain = lang.children_plain()
+        print(children_plain)
+        assert len(children_plain) == 4
+        toml_report = children_plain["TOML"][0]
+        filename = list(toml_report.keys())[0]
+        assert pathlib.Path(filename).name == "tokei.example.toml"
+        assert toml_report[filename] == {'blanks': 0, 'lines': 8, 'code': 4, 'comments': 4}
