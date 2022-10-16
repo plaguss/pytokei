@@ -1,14 +1,14 @@
 use std::collections::{HashMap, HashSet};
 
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
-use pyo3::exceptions::PyValueError;
 
 use tokei::Languages;
 
 use crate::pyconfig::PyConfig;
-use crate::pylanguage_type::PyLanguageType;
 use crate::pylanguage::PyLanguage;
+use crate::pylanguage_type::PyLanguageType;
 
 #[pyclass(name = "Languages")]
 pub struct PyLanguages {
@@ -39,14 +39,10 @@ impl PyLanguages {
             .get_statistics(&[paths_], &[&ignored_], &config.config)
     }
 
-    pub fn summary(&self) -> PyResult<PyObject> {
-        // NOTE: General form of returning a dict from a HasMap.
-        // NOTE: Now we need a way to obtain this HashMap
-        // ref: https://py4u.org/questions/70193869/
-        //    pub fn summary(&self) -> PyResult<PyDict> {
-        let mut map = HashMap::new();
-        map.insert("Python", "summary");
-        return pyo3::Python::with_gil(|py| Ok(map.to_object(py)));
+    pub fn total(&self) -> PyLanguage {
+        PyLanguage {
+            language: self.languages.total(),
+        }
     }
 
     // Return the set of languages.
@@ -66,10 +62,31 @@ impl PyLanguages {
         let maybe_lang = self.languages.get(&lang_type.0);
 
         match maybe_lang {
-            Some(maybe_lang) => Ok(PyLanguage{language: maybe_lang.clone()}),
-            None => Err(PyValueError::new_err(format!("LanguageType not found: {}", lang_type.0)))
+            Some(maybe_lang) => Ok(PyLanguage {
+                language: maybe_lang.clone(),
+            }),
+            None => Err(PyValueError::new_err(format!(
+                "LanguageType not found: {}",
+                lang_type.0
+            ))),
         }
-
     }
 
+    // Exposes the inner structure with the corresponding python classes
+    pub fn get_languages(&self) -> HashMap<PyLanguageType, PyLanguage> {
+        let map: HashMap<PyLanguageType, PyLanguage> = self
+            .languages
+            .iter()
+            .map(|(x, y)| (PyLanguageType(x.clone()), PyLanguage { language: y.clone() }))
+            .collect();
+        map
+    }
+
+    /*
+    pub fn get_languages_plain(&self) -> {
+        /* Equivalent to get_languages but returns the objects in plain python objects
+        instead of wrapped in classes
+        */
+    }
+    */
 }
