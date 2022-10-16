@@ -106,7 +106,6 @@ impl PyCodeStats {
             self.lines()
         ))
     }
-
 }
 
 #[derive(Clone)]
