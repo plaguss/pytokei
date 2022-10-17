@@ -1,4 +1,6 @@
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
+
 use std::str::FromStr;
 use tokei::Sort;
 
@@ -11,16 +13,19 @@ pub struct PySort {
 #[pymethods]
 impl PySort {
     #[new]
-    fn py_new() -> Self {
-        PySort { sort: Sort::Lines }
+    fn new(s: &str) -> Result<Self, pyo3::PyErr> {
+        match Sort::from_str(s) {
+            Ok(sort_obj) => Ok(PySort { sort: sort_obj }),
+            Err(_) => Err(PyValueError::new_err(format!(
+                "Sort type doesn't exists: {}",
+                s
+            ))),
+        }
     }
 
     #[staticmethod]
-    pub fn from_str(s: &str) -> PyResult<PySort> {
-        // NOTE: Take care of the error of
-        Ok(PySort {
-            sort: Sort::from_str(s).unwrap(),
-        })
+    pub fn from_str(s: &str) -> Result<Self, pyo3::PyErr> {
+        Self::new(s)
     }
 
     pub fn __repr__(&self) -> PyResult<String> {
@@ -28,19 +33,14 @@ impl PySort {
     }
 }
 
-/*
-NOT DEVELOPED YET
-    #[getter]
-    fn sort(&self) -> Option<PySort> {
-//        Ok(PySort(sort: self.config.sort))
-        self.config.sort
-    }
-
-    #[getter]
-    fn types(&self) -> Option<Vec<LanguageType>> {
-    // NOTE: RETURN Option<Vec<String>> TRANSFORMING TO THE INNER LanguageType.name()
-//        Ok(PySort(sort: self.config.sort))
-        self.config.types
-    }
-
-*/
+#[pyfunction]
+pub fn sort_types() -> Vec<String> {
+    let sort_types = Vec::from([
+        "Blanks".to_string(),
+        "Comments".to_string(),
+        "Code".to_string(),
+        "Files".to_string(),
+        "Lines".to_string(),
+    ]);
+    sort_types
+}
