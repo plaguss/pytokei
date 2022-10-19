@@ -131,6 +131,12 @@ class TestLanguages:
     def test_languages_by_file(self):
         pass
 
+    def test_get_statistics_multipath(self):
+        langs = tokei.Languages()
+        path1 = str(pathlib.Path(here) / "data" / "python1.py")
+        path2 = str(pathlib.Path(here) / "data" / "Dockerfile")
+        langs.get_statistics([path1, path2], ["ignored"], tokei.Config())
+
 
 class TestLanguageType:
     def test_language_types(self):
