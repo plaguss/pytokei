@@ -139,7 +139,7 @@ class TestLanguages:
 
 class TestLanguageType:
     def test_language_types(self):
-        lang_types = tokei.language_types()
+        lang_types = tokei.LanguageType.list()
         assert isinstance(lang_types, list)
 
     @pytest.fixture

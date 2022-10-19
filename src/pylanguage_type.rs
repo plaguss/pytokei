@@ -282,6 +282,15 @@ impl PyLanguageType {
         self.0.name().to_string()
     }
 
+    #[staticmethod]
+    pub fn list() -> Vec<&'static str> {
+        let mut lang_types = Vec::new();
+        for l in LanguageType::list() {
+            lang_types.push(l.name());
+        }
+        lang_types
+    }
+
     pub fn is_literate(&self) -> bool {
         self.0.is_literate()
     }
@@ -351,13 +360,4 @@ impl PyLanguageType {
         1
     }
     */
-}
-
-#[pyfunction]
-pub fn language_types() -> Vec<&'static str> {
-    let mut lang_types = Vec::new();
-    for l in LanguageType::list() {
-        lang_types.push(l.name());
-    }
-    lang_types
 }
