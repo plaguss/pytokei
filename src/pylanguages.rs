@@ -16,8 +16,6 @@ pub struct PyLanguages {
 
 #[pymethods]
 impl PyLanguages {
-    // Define a method __getattr__ to retrieve the languages:
-    // https://docs.rs/tokei/latest/tokei/
     #[new]
     pub fn new() -> Self {
         PyLanguages {
