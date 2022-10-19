@@ -280,16 +280,16 @@ impl PyLanguageType {
         self.0.name().to_string()
     }
 
-//    pub fn list(&self) ->
-    /* TO BE DEVELOPED YET
     pub fn is_literate(&self) -> bool {
-        1
+        self.0.is_literate()
     }
 
-    pub fn line_comments(&self) -> bool {
-        1
+    pub fn line_comments(&self) -> Vec<&'static str> {
+        let vec = Vec::from(self.0.line_comments());
+        vec
     }
 
+    /* TO BE DEVELOPED YET
     pub fn multi_line_comments(&self) -> bool {
         1
     }

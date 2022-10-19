@@ -143,6 +143,10 @@ class TestLanguageType:
         lang_types = tokei.language_types()
         assert isinstance(lang_types, list)
 
+    @pytest.fixture
+    def rust_lang(self):
+        return tokei.LanguageType("Rust")
+
     def test_repr(self):
         python = tokei.LanguageType("Python")
         assert repr(python) == "LanguageType(Python)"
@@ -153,6 +157,65 @@ class TestLanguageType:
     def test_for_error(self):
         with pytest.raises(ValueError):
             tokei.LanguageType("inexistent")
+
+    def test_is_literate(self, rust_lang):
+        assert rust_lang.is_literate() is False
+
+    def test_line_comments(self, rust_lang):
+        assert rust_lang.line_comments() == ["//"]
+        assert tokei.LanguageType("Abap").line_comments() == ["*","\""]
+
+    def test_line_comments(self, rust_lang):
+        assert rust_lang.line_comments() == ["//"]
+
+    @pytest.mark.skip
+    def test_multiline_comments(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_allows_nested(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_nested_comments(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_quotes(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_verbatim_quotes(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_multiline_comments(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_doc_quotes(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_shebangs(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_important_syntax(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_from_file_extension(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_from_mime(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
+    @pytest.mark.skip
+    def test_from_shebang(self, rust_lang):
+        assert rust_lang.is_literate() is True
+
 
 class TestLanguage:
     @pytest.fixture
