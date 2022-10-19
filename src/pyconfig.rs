@@ -59,7 +59,6 @@ impl PyConfig {
     }
 
     pub fn __repr__(&self) -> &str {
-        return "Config()"
+        return "Config()";
     }
-
 }

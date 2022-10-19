@@ -31,7 +31,7 @@ impl PyLanguages {
         let ignored_ = ignored_.as_slice();
 
         self.languages
-           .get_statistics(&paths_, &ignored_, &config.config)
+            .get_statistics(&paths_, &ignored_, &config.config)
     }
 
     pub fn total(&self) -> PyLanguage {
