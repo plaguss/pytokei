@@ -293,32 +293,38 @@ impl PyLanguageType {
         let vec = Vec::from(self.0.multi_line_comments());
         vec
     }
-    /* TO BE DEVELOPED YET
 
     pub fn allows_nested(&self) -> bool {
-        1
+        self.0.allows_nested()
     }
 
-    pub fn nested_comments(&self) -> bool {
-        1
+    pub fn nested_comments(&self) -> Vec<(&str, &str)> {
+        let vec = Vec::from(self.0.nested_comments());
+        vec
     }
 
-    pub fn quotes(&self) -> bool {
-        1
+    pub fn quotes(&self) -> Vec<(&str, &str)> {
+        let vec = Vec::from(self.0.quotes());
+        vec
     }
 
-    pub fn verbatim_quotes(&self) -> bool {
-        1
+    pub fn verbatim_quotes(&self) -> Vec<(&str, &str)> {
+        let vec = Vec::from(self.0.verbatim_quotes());
+        vec
     }
 
-    pub fn doc_quotes(&self) -> bool {
-        1
+    pub fn doc_quotes(&self) -> Vec<(&str, &str)> {
+        let vec = Vec::from(self.0.doc_quotes());
+        vec
     }
 
-    pub fn shebangs(&self) -> bool {
-        1
+    pub fn shebangs(&self) -> Vec<&str> {
+        let vec = Vec::from(self.0.shebangs());
+        vec
     }
 
+
+    /* TO BE DEVELOPED YET
     pub fn important_syntax(&self) -> bool {
         1
     }

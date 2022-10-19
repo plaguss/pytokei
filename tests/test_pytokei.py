@@ -167,35 +167,25 @@ class TestLanguageType:
 
     def test_multiline_comments(self, rust_lang):
         assert rust_lang.multi_line_comments() == [("/*", "*/")]
-        assert tokei.LanguageType("AspNet").multi_line_comments() == [("<!--","-->",),("<%--","-->",),]
+        assert tokei.LanguageType("ASP.NET").multi_line_comments() == [("<!--","-->",),("<%--","-->",),]
 
-    @pytest.mark.skip
     def test_allows_nested(self, rust_lang):
-        assert rust_lang.is_literate() is True
+        assert rust_lang.allows_nested() is True
 
-    @pytest.mark.skip
-    def test_nested_comments(self, rust_lang):
-        assert rust_lang.is_literate() is True
+    def test_nested_comments(self):
+        assert tokei.LanguageType("D").nested_comments() == [("/+", "+/")]
 
-    @pytest.mark.skip
-    def test_quotes(self, rust_lang):
-        assert rust_lang.is_literate() is True
+    def test_quotes(self):
+        assert tokei.LanguageType("C").quotes() == [("\"", "\"")]
 
-    @pytest.mark.skip
-    def test_verbatim_quotes(self, rust_lang):
-        assert rust_lang.is_literate() is True
+    def test_verbatim_quotes(self):
+        assert tokei.LanguageType("C#").verbatim_quotes() == [("@\"", "\"")]
 
-    @pytest.mark.skip
-    def test_multiline_comments(self, rust_lang):
-        assert rust_lang.is_literate() is True
+    def test_doc_quotes(self):
+        assert tokei.LanguageType("Python").doc_quotes() == [("\"\"\"", "\"\"\""), ("'''", "'''")]
 
-    @pytest.mark.skip
-    def test_doc_quotes(self, rust_lang):
-        assert rust_lang.is_literate() is True
-
-    @pytest.mark.skip
-    def test_shebangs(self, rust_lang):
-        assert rust_lang.is_literate() is True
+    def test_shebangs(self):
+        tokei.LanguageType("BASH").shebangs() == ["#!/bin/bash"]
 
     @pytest.mark.skip
     def test_important_syntax(self, rust_lang):
