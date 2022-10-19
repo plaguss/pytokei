@@ -21,13 +21,12 @@ class TestConfig:
     def test_columns(self, conf):
         assert conf.columns is None
 
-    @pytest.mark.skip
     def test_repr(self, conf):
-        pass
+        assert repr(conf) == "Config()"
 
-    @pytest.mark.skip
     def test_read_from_file(self, conf):
-        pass
+        conf = tokei.Config.from_config_files()
+        assert isinstance(conf, tokei.Config)
 
 
 class TestSort:

@@ -9,7 +9,7 @@ pub struct PyConfig {
 #[pymethods]
 impl PyConfig {
     #[new]
-    pub fn py_new() -> Self {
+    pub fn new() -> Self {
         PyConfig {
             config: Config::default(),
         }
@@ -50,4 +50,16 @@ impl PyConfig {
     pub fn treat_doc_strings_as_comments(&self) -> Option<bool> {
         self.config.treat_doc_strings_as_comments
     }
+
+    #[staticmethod]
+    pub fn from_config_files() -> Self {
+        PyConfig {
+            config: Config::from_config_files(),
+        }
+    }
+
+    pub fn __repr__(&self) -> &str {
+        return "Config()"
+    }
+
 }
