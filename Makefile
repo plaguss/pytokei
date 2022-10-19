@@ -8,7 +8,7 @@ test:
 	pytest tests
 
 mypy:
-	mypy pytokei
+	mypy pytokei --strict
 
 format:
 	$(isort)

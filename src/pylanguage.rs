@@ -44,8 +44,6 @@ impl PyLanguage {
 
     #[getter]
     pub fn reports(&self) -> Vec<PyReport> {
-        // Check for implementation of map on the iterator:
-        // https://stackoverflow.com/questions/30026893/using-map-with-vectors
         let mut reports = Vec::new();
         let inner = self.language.reports.clone();
         for r in &inner {
