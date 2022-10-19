@@ -41,7 +41,7 @@ impl PyLanguages {
     }
 
     // Return the set of languages.
-    // TODO: Simplify function
+    // TODO: Simplify this function
     pub fn language_names(&self) -> PyResult<PyObject> {
         let mut names = HashSet::new();
         //        let keys: Vec<_> = self.languages.keys().cloned().collect();

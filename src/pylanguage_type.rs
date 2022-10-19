@@ -263,7 +263,7 @@ impl PyLanguageType {
         hasher.finish()
     }
 
-    pub fn __richcmp__(&self, other: &Self, op: CompareOp) -> PyResult<bool> {
+    fn __richcmp__(&self, other: &Self, op: CompareOp) -> PyResult<bool> {
         match op {
             CompareOp::Lt => Ok(self.0 < other.0),
             CompareOp::Le => Ok(self.0 <= other.0),

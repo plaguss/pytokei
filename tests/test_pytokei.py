@@ -37,16 +37,16 @@ class TestSort:
     def test_repr(self, sort):
         assert repr(sort) == "Sort(Lines)"
 
-    @pytest.mark.skip
     def test_from_str(self):
         sort = tokei.Sort.from_str("blanks")
         assert repr(sort) == "Sort(Blanks)"
         sort = tokei.Sort.from_str("Blanks")
         assert repr(sort) == "Sort(Blanks)"
-        # TODO: Control for undefined errors from rust side
-        # sort = tokei.PySort.from_str("undefined")
-        # assert repr(sort) == "PySort(Blanks)"
+        with pytest.raises(ValueError):
+            tokei.Sort.from_str("undefined")
 
+def test_sort_types():
+    assert tokei.sort_types() == ["Blanks", "Comments", "Code", "Files", "Lines"]
 
 class TestCodeStats:
     @pytest.fixture
@@ -125,10 +125,6 @@ class TestLanguages:
         conf = tokei.Config()
         languages.get_statistics([path], [ignore], conf)
         assert languages.language_names() == set(["Python", "Rust", "Dockerfile", "TOML"])
-
-    @pytest.mark.skip
-    def test_languages_by_file(self):
-        pass
 
     def test_get_statistics_multipath(self):
         langs = tokei.Languages()
@@ -319,3 +315,11 @@ class TestPytokei:
         filename = list(toml_report.keys())[0]
         assert pathlib.Path(filename).name == "tokei.example.toml"
         assert toml_report[filename] == {'blanks': 0, 'lines': 8, 'code': 4, 'comments': 4}
+
+    @pytest.mark.skip
+    def test_language_plain():
+        pass
+
+    @pytest.mark.skip
+    def test_languages_get_languages_plain():
+        pass
