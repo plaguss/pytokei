@@ -25,7 +25,6 @@ impl PyConfig {
         self.config.hidden
     }
 
-    //
     #[getter]
     pub fn no_ignore(&self) -> Option<bool> {
         self.config.no_ignore
