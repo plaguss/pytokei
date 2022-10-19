@@ -187,21 +187,24 @@ class TestLanguageType:
     def test_shebangs(self):
         tokei.LanguageType("BASH").shebangs() == ["#!/bin/bash"]
 
-    @pytest.mark.skip
     def test_important_syntax(self, rust_lang):
-        assert rust_lang.is_literate() is True
+        assert rust_lang.important_syntax() == ['#"', '"', '/*', '///', '//!']
+
+    @pytest.mark.skip
+    def test_from_path(self):
+        raise NotImplementedError
 
     @pytest.mark.skip
     def test_from_file_extension(self, rust_lang):
-        assert rust_lang.is_literate() is True
+        raise NotImplementedError
 
     @pytest.mark.skip
     def test_from_mime(self, rust_lang):
-        assert rust_lang.is_literate() is True
+        raise NotImplementedError
 
     @pytest.mark.skip
     def test_from_shebang(self, rust_lang):
-        assert rust_lang.is_literate() is True
+        raise NotImplementedError
 
 
 class TestLanguage:

@@ -9,6 +9,8 @@ use pyo3::prelude::*;
 
 use tokei::LanguageType;
 
+// use crate::pyconfig::PyConfig;
+
 fn language_type_mapper(lang_type: &str) -> Result<LanguageType, pyo3::PyErr> {
     match lang_type {
         "ABNF" => Ok(LanguageType::ABNF),
@@ -323,11 +325,19 @@ impl PyLanguageType {
         vec
     }
 
+    pub fn important_syntax(&self) -> Vec<&str> {
+        let vec = Vec::from(self.0.important_syntax());
+        vec
+    }
 
     /* TO BE DEVELOPED YET
-    pub fn important_syntax(&self) -> bool {
-        1
-    }
+    // #[staticmethod]
+    // pub fn from_path(entry: &str, _config: &PyConfig) -> Option<Self> {
+    // NOT DEVELOPED YET, WOULD NEED REWRITING THE new METHOD
+    //     match LanguageType::from_path(entry, &_config.config) {
+    //         Some(lang_type) => PyLanguageType()
+    //     }
+    // }
 
     pub fn from_file_extension(&self) -> bool {
         1
