@@ -6,6 +6,7 @@ from pytokei._pytokei import (
     LanguageType,
     Report,
     Sort,
+    sort_types,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "LanguageType",
     "Report",
     "Sort",
+    "sort_types",
 ]
