@@ -165,12 +165,9 @@ class TestLanguageType:
         assert rust_lang.line_comments() == ["//"]
         assert tokei.LanguageType("Abap").line_comments() == ["*","\""]
 
-    def test_line_comments(self, rust_lang):
-        assert rust_lang.line_comments() == ["//"]
-
-    @pytest.mark.skip
     def test_multiline_comments(self, rust_lang):
-        assert rust_lang.is_literate() is True
+        assert rust_lang.multi_line_comments() == [("/*", "*/")]
+        assert tokei.LanguageType("AspNet").multi_line_comments() == [("<!--","-->",),("<%--","-->",),]
 
     @pytest.mark.skip
     def test_allows_nested(self, rust_lang):

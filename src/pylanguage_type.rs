@@ -284,15 +284,16 @@ impl PyLanguageType {
         self.0.is_literate()
     }
 
-    pub fn line_comments(&self) -> Vec<&'static str> {
+    pub fn line_comments(&self) -> Vec<&str> {
         let vec = Vec::from(self.0.line_comments());
         vec
     }
 
-    /* TO BE DEVELOPED YET
-    pub fn multi_line_comments(&self) -> bool {
-        1
+    pub fn multi_line_comments(&self) -> Vec<(&str, &str)> {
+        let vec = Vec::from(self.0.multi_line_comments());
+        vec
     }
+    /* TO BE DEVELOPED YET
 
     pub fn allows_nested(&self) -> bool {
         1
