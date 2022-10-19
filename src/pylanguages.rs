@@ -2,7 +2,6 @@ use std::collections::{HashMap, HashSet};
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::types::PyString;
 
 use tokei::Languages;
 
@@ -26,17 +25,15 @@ impl PyLanguages {
         }
     }
 
-    pub fn get_statistics(&mut self, paths: &PyString, ignored: &PyString, config: &PyConfig) {
-        // NOTE: First attempt using only a string,
-        // in tokei it takes a list of paths
-        let binding_path = paths.to_string();
-        let paths_: &str = binding_path.as_ref();
+    pub fn get_statistics(&mut self, paths: Vec<String>, ignored: Vec<String>, config: &PyConfig) {
+        let paths_: Vec<&str> = paths.iter().map(String::as_str).collect();
+        let paths_ = paths_.as_slice();
 
-        let ignored_path = ignored.to_string();
-        let ignored_: &str = ignored_path.as_ref();
+        let ignored_: Vec<&str> = ignored.iter().map(String::as_str).collect();
+        let ignored_ = ignored_.as_slice();
 
         self.languages
-            .get_statistics(&[paths_], &[&ignored_], &config.config)
+           .get_statistics(&paths_, &ignored_, &config.config)
     }
 
     pub fn total(&self) -> PyLanguage {

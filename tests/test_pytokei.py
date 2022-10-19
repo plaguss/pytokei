@@ -33,7 +33,7 @@ class TestConfig:
 class TestSort:
     @pytest.fixture
     def sort(self):
-        return tokei.Sort()
+        return tokei.Sort("lines")
 
     def test_repr(self, sort):
         assert repr(sort) == "Sort(Lines)"
@@ -124,7 +124,7 @@ class TestLanguages:
         path = SAMPLE_FILES_PATH
         ignore = "nothing"  # This should take also a null string
         conf = tokei.Config()
-        languages.get_statistics(path, ignore, conf)
+        languages.get_statistics([path], [ignore], conf)
         assert languages.language_names() == set(["Python", "Rust", "Dockerfile", "TOML"])
 
     @pytest.mark.skip
@@ -200,7 +200,7 @@ class TestPytokei:
     @pytest.fixture
     def languages(self):
         langs = tokei.Languages()
-        langs.get_statistics(str(SAMPLE_FILES_PATH), "ignored", tokei.Config())
+        langs.get_statistics([str(SAMPLE_FILES_PATH)], ["ignored"], tokei.Config())
         return langs
 
     def test_access_parsed_languages(self, languages):
