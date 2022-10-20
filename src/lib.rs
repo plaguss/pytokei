@@ -4,7 +4,7 @@ use crate::pyconfig::PyConfig;
 use crate::pylanguage::PyLanguage;
 use crate::pylanguage_type::PyLanguageType;
 use crate::pylanguages::PyLanguages;
-use crate::pysort::{PySort, sort_types};
+use crate::pysort::{sort_types, PySort};
 use crate::pystats::{PyCodeStats, PyReport};
 
 pub mod pyconfig;
