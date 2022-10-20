@@ -122,4 +122,8 @@ impl PyLanguage {
     pub fn __repr__(&self) -> String {
         format!("Language(empty: {:?})", self.is_empty())
     }
+
+    pub fn files(&self) -> usize {
+        self.language.reports.len()
+    }
 }

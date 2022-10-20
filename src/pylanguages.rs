@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -41,15 +41,13 @@ impl PyLanguages {
     }
 
     // Return the set of languages.
-    // TODO: Simplify this function
-    pub fn language_names(&self) -> PyResult<PyObject> {
-        let mut names = HashSet::new();
-        //        let keys: Vec<_> = self.languages.keys().cloned().collect();
-        // transform the loop to .keys().map() with a closure if possible
-        for (lang, _) in &self.languages {
-            names.insert(lang.name());
-        }
-        return pyo3::Python::with_gil(|py| Ok(names.to_object(py)));
+    pub fn language_names(&self) -> PyResult<Vec<&str>> {
+        let vec = self
+            .languages
+            .iter()
+            .map(|(lang_type, _)| lang_type.name())
+            .collect();
+        Ok(vec)
     }
 
     // Implement the same functionality as in the main example.
@@ -83,6 +81,15 @@ impl PyLanguages {
             })
             .collect();
         map
+    }
+
+    pub fn files(&self) -> HashMap<&str, usize> {
+        let files = self
+            .languages
+            .iter()
+            .map(|(lang_type, lang)| (lang_type.name(), lang.reports.len()))
+            .collect();
+        files
     }
 
     // Equivalent to get_languages but returns the objects in plain python objects
