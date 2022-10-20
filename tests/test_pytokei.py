@@ -124,7 +124,7 @@ class TestLanguages:
         ignore = "nothing"  # This should take also a null string
         conf = tokei.Config()
         languages.get_statistics([path], [ignore], conf)
-        assert languages.language_names() == set(["Python", "Rust", "Dockerfile", "TOML"])
+        assert languages.language_names() == ["Dockerfile", "Python", "Rust", "TOML"]
 
     def test_get_statistics_multipath(self):
         langs = tokei.Languages()
@@ -243,6 +243,9 @@ class TestLanguage:
     def test_repr(self, language):
         assert repr(language) == "Language(empty: true)"
 
+    def test_files(self, language):
+        assert language.files() == 0
+
 # TODO: Needs checks for possible errors.
 
 # These should be considered integration tests, the code
@@ -252,14 +255,14 @@ class TestLanguage:
 class TestPytokei:
     # Test for errors on paths
     @pytest.fixture
-    def languages(self):
+    def languages(self) -> tokei.Languages:
         langs = tokei.Languages()
         langs.get_statistics([str(SAMPLE_FILES_PATH)], ["ignored"], tokei.Config())
         return langs
 
     def test_access_parsed_languages(self, languages):
         langs = languages.language_names()
-        assert langs == {"Dockerfile", "Python", "Rust", "TOML"}
+        assert langs == ["Dockerfile", "Python", "Rust", "TOML"]
 
     def test_languages_getitem(self, languages):
         lang = languages[tokei.LanguageType("Dockerfile")]
@@ -315,6 +318,15 @@ class TestPytokei:
         filename = list(toml_report.keys())[0]
         assert pathlib.Path(filename).name == "tokei.example.toml"
         assert toml_report[filename] == {'blanks': 0, 'lines': 8, 'code': 4, 'comments': 4}
+
+    def test_languages_files(self, languages):
+        assert languages.files() == {'Dockerfile': 1, 'Python': 2, 'Rust': 1, 'TOML': 1}
+
+    def test_sample(self, languages):
+        print(languages.language_names())
+        # print(languages[tokei.LanguageType("Python")].reports_plain())
+        print(languages.reports_plain())
+        assert 1==2
 
     @pytest.mark.skip
     def test_language_plain():
