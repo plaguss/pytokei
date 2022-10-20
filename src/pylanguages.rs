@@ -6,7 +6,7 @@ use pyo3::prelude::*;
 use tokei::Languages;
 
 use crate::pyconfig::PyConfig;
-use crate::pylanguage::PyLanguage;
+use crate::pylanguage::{PyLanguage, ReportsPlain};
 use crate::pylanguage_type::PyLanguageType;
 
 #[pyclass(name = "Languages")]
@@ -40,7 +40,6 @@ impl PyLanguages {
         }
     }
 
-    // Return the set of languages.
     pub fn language_names(&self) -> PyResult<Vec<&str>> {
         let vec = self
             .languages
@@ -92,18 +91,20 @@ impl PyLanguages {
         files
     }
 
-    // Equivalent to get_languages but returns the objects in plain python objects
-    // instead of wrapped in classes
-    // TODO: First treat the other classes to simplify getting them here.
-    /*
-    pub fn get_languages_plain(&self) -> HashMap<&'static str, &'static str> {
-        let map: HashMap<PyLanguageType, PyLanguage> = self
+    pub fn get_languages_plain(&self) -> HashMap<&str, ReportsPlain> {
+        let map: HashMap<&str, ReportsPlain> = self
             .languages
             .iter()
-            .map(|(x, y)| (PyLanguageType(x.clone()), PyLanguage { language: y.clone() }))
+            .map(|(lang_type, lang)| {
+                (
+                    lang_type.name(),
+                    PyLanguage {
+                        language: lang.clone(),
+                    }
+                    .reports_plain(),
+                )
+            })
             .collect();
         map
-
     }
-    */
 }
