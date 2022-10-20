@@ -45,8 +45,10 @@ class TestSort:
         with pytest.raises(ValueError):
             tokei.Sort.from_str("undefined")
 
+
 def test_sort_types():
     assert tokei.sort_types() == ["Blanks", "Comments", "Code", "Files", "Lines"]
+
 
 class TestCodeStats:
     @pytest.fixture
@@ -158,11 +160,20 @@ class TestLanguageType:
 
     def test_line_comments(self, rust_lang):
         assert rust_lang.line_comments() == ["//"]
-        assert tokei.LanguageType("Abap").line_comments() == ["*","\""]
+        assert tokei.LanguageType("Abap").line_comments() == ["*", '"']
 
     def test_multiline_comments(self, rust_lang):
         assert rust_lang.multi_line_comments() == [("/*", "*/")]
-        assert tokei.LanguageType("ASP.NET").multi_line_comments() == [("<!--","-->",),("<%--","-->",),]
+        assert tokei.LanguageType("ASP.NET").multi_line_comments() == [
+            (
+                "<!--",
+                "-->",
+            ),
+            (
+                "<%--",
+                "-->",
+            ),
+        ]
 
     def test_allows_nested(self, rust_lang):
         assert rust_lang.allows_nested() is True
@@ -171,19 +182,22 @@ class TestLanguageType:
         assert tokei.LanguageType("D").nested_comments() == [("/+", "+/")]
 
     def test_quotes(self):
-        assert tokei.LanguageType("C").quotes() == [("\"", "\"")]
+        assert tokei.LanguageType("C").quotes() == [('"', '"')]
 
     def test_verbatim_quotes(self):
-        assert tokei.LanguageType("C#").verbatim_quotes() == [("@\"", "\"")]
+        assert tokei.LanguageType("C#").verbatim_quotes() == [('@"', '"')]
 
     def test_doc_quotes(self):
-        assert tokei.LanguageType("Python").doc_quotes() == [("\"\"\"", "\"\"\""), ("'''", "'''")]
+        assert tokei.LanguageType("Python").doc_quotes() == [
+            ('"""', '"""'),
+            ("'''", "'''"),
+        ]
 
     def test_shebangs(self):
         tokei.LanguageType("BASH").shebangs() == ["#!/bin/bash"]
 
     def test_important_syntax(self, rust_lang):
-        assert rust_lang.important_syntax() == ['#"', '"', '/*', '///', '//!']
+        assert rust_lang.important_syntax() == ['#"', '"', "/*", "///", "//!"]
 
     @pytest.mark.skip
     def test_from_path(self):
@@ -246,6 +260,7 @@ class TestLanguage:
     def test_files(self, language):
         assert language.files() == 0
 
+
 # TODO: Needs checks for possible errors.
 
 # These should be considered integration tests, the code
@@ -279,12 +294,18 @@ class TestPytokei:
         assert all([~v.is_empty() for v in inner.values()])
 
     def test_language_total(self, languages):
+        assert len(languages.files()) == 4
         lang = languages.total()
-        assert isinstance(lang, tokei.Language)
+        assert lang.blanks == 17
+        assert lang.code == 66
+        assert lang.comments == 13
+        assert lang.lines() == 96
 
-    @pytest.mark.skip
     def test_language_sort_by(self, languages):
-        pass
+        lang = languages[tokei.LanguageType("Python")]
+        assert lang.reports[0].name.endswith("python1.py")
+        lang.sort_by(tokei.Sort("Lines"))
+        assert lang.reports[0].name.endswith("python2.py")
 
     def test_language_get_reports(self, languages):
         reports = languages.get_languages()[tokei.LanguageType("Python")].reports
@@ -292,13 +313,19 @@ class TestPytokei:
         assert all(isinstance(r, tokei.Report) for r in reports)
 
     def test_language_get_reports_plain(self, languages):
-        reports_plain = languages.get_languages()[tokei.LanguageType("Python")].reports_plain()
+        reports_plain = languages.get_languages()[
+            tokei.LanguageType("Rust")
+        ].reports_plain()
         assert isinstance(reports_plain, list)
-        print(reports_plain[0])
         assert all([isinstance(r, dict) for r in reports_plain])
-        assert len(reports_plain) == 2
+        assert len(reports_plain) == 1
         filename = list(reports_plain[0].keys())[0]
-        assert reports_plain[0][filename] == {'lines': 15, 'blanks': 3, 'code': 10, 'comments': 2}
+        assert reports_plain[0][filename] == {
+            "lines": 39,
+            "blanks": 4,
+            "code": 33,
+            "comments": 2,
+        }
 
     def test_language_get_children(self, languages):
         lang = languages.total()
@@ -312,26 +339,24 @@ class TestPytokei:
     def test_language_get_children_plain(self, languages):
         lang = languages.total()
         children_plain = lang.children_plain()
-        print(children_plain)
         assert len(children_plain) == 4
         toml_report = children_plain["TOML"][0]
         filename = list(toml_report.keys())[0]
         assert pathlib.Path(filename).name == "tokei.example.toml"
-        assert toml_report[filename] == {'blanks': 0, 'lines': 8, 'code': 4, 'comments': 4}
+        assert toml_report[filename] == {
+            "blanks": 0,
+            "lines": 8,
+            "code": 4,
+            "comments": 4,
+        }
 
     def test_languages_files(self, languages):
-        assert languages.files() == {'Dockerfile': 1, 'Python': 2, 'Rust': 1, 'TOML': 1}
+        assert languages.files() == {"Dockerfile": 1, "Python": 2, "Rust": 1, "TOML": 1}
 
-    def test_sample(self, languages):
-        print(languages.language_names())
-        # print(languages[tokei.LanguageType("Python")].reports_plain())
-        print(languages.reports_plain())
-        assert 1==2
-
-    @pytest.mark.skip
-    def test_language_plain():
-        pass
-
-    @pytest.mark.skip
-    def test_languages_get_languages_plain():
-        pass
+    def test_languages_get_languages_plain(self, languages):
+        received = languages.get_languages_plain()
+        assert isinstance(received, dict)
+        assert len(received) == 4
+        assert isinstance(received["TOML"], list)
+        assert len(received["TOML"]) == 1
+        assert list(received["TOML"][0].keys())[0].endswith("tokei.example.toml")

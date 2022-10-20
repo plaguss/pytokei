@@ -13,3 +13,6 @@ def add(x, y):
     y += len(string)
     # Add the two numbers.
     x + y
+
+def other():
+    pass
