@@ -9,7 +9,7 @@ use crate::pysort::PySort;
 use crate::pystats::PyReport;
 
 type LanguageChildrenPlain = HashMap<String, Vec<HashMap<String, HashMap<&'static str, usize>>>>;
-type ReportsPlain = Vec<HashMap<String, HashMap<&'static str, usize>>>;
+pub type ReportsPlain = Vec<HashMap<String, HashMap<&'static str, usize>>>;
 
 #[pyclass(name = "Language")]
 pub struct PyLanguage {
