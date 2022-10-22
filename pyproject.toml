@@ -5,20 +5,30 @@ build-backend = 'maturin'
 [project]
 name = 'pytokei'
 requires-python = '>=3.7'
-description = 'Python bindings to tokei'
+description = 'Python bindings to tokei, the Rust library to count code quickly.'
 authors = [
     {name ='Agustin Piqueres', email = 'agustin.piqueres@gmail.com'},
 ]
-
-[project.optional-dependencies]
-test = [
-    "pytest >= 7.1.3",
-    "pytest-cov>=2",
-    "black",
-    "isort",
-    "nox"
+classifiers = [
+    'Programming Language :: Python :: 3 :: Only',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: POSIX :: Linux',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: MacOS',
+    'Topic :: Software Development :: Libraries :: Python Modules'
 ]
+description-file = "README.md"
+
+[project.urls]
+Homepage = 'https://github.com/plaguss/pytokei'
+Documentation = 'https://plaguss.github.io/pytokei/'
+Source = 'https://github.com/plaguss/pytokei'
 
 [tool.maturin]
 bindings = 'pyo3'
 sdist-include = ['Cargo.lock']
+
+[tool.mypy]
+strict = true
+show_error_codes = true
