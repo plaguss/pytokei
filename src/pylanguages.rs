@@ -49,8 +49,6 @@ impl PyLanguages {
         Ok(vec)
     }
 
-    // Implement the same functionality as in the main example.
-    // Corresponds to let rust = &languages[&LanguageType::Rust]; in python
     pub fn __getitem__(&self, lang_type: &PyLanguageType) -> Result<PyLanguage, PyErr> {
         let maybe_lang = self.languages.get(&lang_type.0);
 
@@ -107,4 +105,9 @@ impl PyLanguages {
             .collect();
         map
     }
+
+    pub fn __repr__(&self) -> &str {
+        return "Languages()";
+    }
+
 }
