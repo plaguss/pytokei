@@ -60,4 +60,9 @@ impl PyConfig {
     pub fn __repr__(&self) -> &str {
         return "Config()";
     }
+
+    // Yet to be defined.
+//    pub fn sort() -> Option<PySort> {}
+//    pub fn types() -> Option<Vec<PyLanguageType>> {}
+
 }
