@@ -8,9 +8,19 @@ test:
 	pytest tests
 
 mypy:
-	mypy pytokei --strict
+	mypy pytokei
 
-format:
+format-python:
 	$(isort)
 	$(black)
-	cargo fmt --all
+
+format-rust:
+	cargo fmt
+
+format: format-python, format-rust
+
+install-dev:
+	pip install -r requirements/all.txt
+
+docs:
+	mkdocs build
