@@ -1,0 +1,69 @@
+site_name: pytokei
+site_description: Python bindings to tokei, the Rust library to count code quickly.
+site_url: https://plaguss.github.io/pytokei
+
+theme:
+  name: "material"
+  palette: 
+    - scheme: default
+      primary: deep purple
+      accent: green
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+
+    - scheme: slate
+      primary: deep purple
+      accent: green
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+  features:
+    - content.code.annotate 
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+  language: en
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+
+repo_name: plaguss/pytokei
+repo_url: https://github.com/plaguss/pytokei
+edit_uri: ""
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          rendering:
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: false
+            heading_level: 2
+            merge_init_into_class: true
+            show_signature_annotations: true
+            separate_signature: true
+
+nav:
+    - Intro: index.md
+    - Examples: examples.md
+    - API:
+        - api/config.md
+        - api/language_type.md
+        - api/language.md
+        - api/languages.md
+        - api/sort.md
+        - api/stats.md
