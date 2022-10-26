@@ -365,9 +365,12 @@ class TestPytokei:
         totals = languages.total_plain()
         columns = ["blanks", "code", "comments", "files", "lines"]
         values = [18, 66, 13, 5, 97]
-        assert [totals[c] == v for c, v in zip(columns, values)]
+        assert all([totals[c] == v for c, v in zip(columns, values)])
 
     def test_languages_default_report_plain(self, languages):
-        report = languages.default_report_plain()
-        assert report == {}
-
+        report = languages.get_report_compact_plain()
+        lang_names = ["TOML", "Dockerfile", "Python", "Rust"]
+        stats = ["files", "lines", "code", "comments", "blanks"]
+        values_dockerfile = [1, 16, 7, 3, 6]
+        assert all([name in report.keys() for name in lang_names])
+        assert all([report["Dockerfile"][k] == v for k, v in zip(stats, values_dockerfile)])
