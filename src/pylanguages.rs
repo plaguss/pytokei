@@ -93,7 +93,6 @@ impl PyLanguages {
         return "Languages()";
     }
 
-
     pub fn get_languages_plain(&self) -> HashMap<&str, ReportsPlain> {
         // Corresponds to calling to the general command with --files and --compact
         let map: HashMap<&str, ReportsPlain> = self
@@ -112,14 +111,14 @@ impl PyLanguages {
         map
     }
 
-    // LOOP THROUGH EACH LANGUAGE AND GET THE CONTENT FROM ITS TOTAL
-    // https://github.com/XAMPPRocky/tokei/blob/master/src/cli_utils.rs#L315
-    // https://github.com/XAMPPRocky/tokei/blob/master/src/cli_utils.rs#L295
     pub fn total_plain(&self) -> HashMap<&str, usize> {
         // Returns the Total aggregation.
         let lang_total = self.languages.total();
         let map = HashMap::from([
-            ("files", lang_total.children.values().map(Vec::len).sum::<usize>()),
+            (
+                "files",
+                lang_total.children.values().map(Vec::len).sum::<usize>(),
+            ),
             ("lines", lang_total.lines()),
             ("code", lang_total.code),
             ("comments", lang_total.comments),
@@ -128,19 +127,22 @@ impl PyLanguages {
         map
     }
 
-    // pub fn default_report_plain(&self) -> HashMap<> {
-    //     // Returns the info obtained from the default CLI command
-    //     // CHECK FOR BLOBS
-    //     let total = self.languages.total();
+    pub fn get_report_compact_plain(&self) -> HashMap<&str, HashMap<&str, usize>> {
+        // Returns the info obtained from the default CLI command in compact mode
+        // NOTE: Rewrite using the internal structs
+        let mut report = HashMap::new();
 
-    // }
-
-    // pub fn default_report_compact_plain(&self) -> HashMap<> {
-    //     // Returns the info obtained from the default CLI command
-    //     // CHECK FOR BLOBS
-    //     let total = self.languages.total();
-
-    // }
-
-
+        for (ltype, lang) in &self.languages {
+            let mut stats = HashMap::new();
+            for r in &lang.reports {
+                stats.insert("lines", r.stats.lines());
+                stats.insert("code", r.stats.code);
+                stats.insert("comments", r.stats.comments);
+                stats.insert("blanks", r.stats.blanks);
+            }
+            stats.insert("files", lang.reports.len());
+            report.insert(ltype.name(), stats);
+        }
+        report
+    }
 }
