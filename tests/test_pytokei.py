@@ -360,3 +360,14 @@ class TestPytokei:
         assert isinstance(received["TOML"], list)
         assert len(received["TOML"]) == 1
         assert list(received["TOML"][0].keys())[0].endswith("tokei.example.toml")
+
+    def test_languages_total_plain(self, languages):
+        totals = languages.total_plain()
+        columns = ["blanks", "code", "comments", "files", "lines"]
+        values = [18, 66, 13, 5, 97]
+        assert [totals[c] == v for c, v in zip(columns, values)]
+
+    def test_languages_default_report_plain(self, languages):
+        report = languages.default_report_plain()
+        assert report == {}
+

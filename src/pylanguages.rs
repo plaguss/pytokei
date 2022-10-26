@@ -89,7 +89,13 @@ impl PyLanguages {
         files
     }
 
+    pub fn __repr__(&self) -> &str {
+        return "Languages()";
+    }
+
+
     pub fn get_languages_plain(&self) -> HashMap<&str, ReportsPlain> {
+        // Corresponds to calling to the general command with --files and --compact
         let map: HashMap<&str, ReportsPlain> = self
             .languages
             .iter()
@@ -106,8 +112,35 @@ impl PyLanguages {
         map
     }
 
-    pub fn __repr__(&self) -> &str {
-        return "Languages()";
+    // LOOP THROUGH EACH LANGUAGE AND GET THE CONTENT FROM ITS TOTAL
+    // https://github.com/XAMPPRocky/tokei/blob/master/src/cli_utils.rs#L315
+    // https://github.com/XAMPPRocky/tokei/blob/master/src/cli_utils.rs#L295
+    pub fn total_plain(&self) -> HashMap<&str, usize> {
+        // Returns the Total aggregation.
+        let lang_total = self.languages.total();
+        let map = HashMap::from([
+            ("files", lang_total.children.values().map(Vec::len).sum::<usize>()),
+            ("lines", lang_total.lines()),
+            ("code", lang_total.code),
+            ("comments", lang_total.comments),
+            ("blanks", lang_total.blanks),
+        ]);
+        map
     }
+
+    // pub fn default_report_plain(&self) -> HashMap<> {
+    //     // Returns the info obtained from the default CLI command
+    //     // CHECK FOR BLOBS
+    //     let total = self.languages.total();
+
+    // }
+
+    // pub fn default_report_compact_plain(&self) -> HashMap<> {
+    //     // Returns the info obtained from the default CLI command
+    //     // CHECK FOR BLOBS
+    //     let total = self.languages.total();
+
+    // }
+
 
 }
