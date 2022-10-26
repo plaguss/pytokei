@@ -62,7 +62,6 @@ impl PyConfig {
     }
 
     // Yet to be defined.
-//    pub fn sort() -> Option<PySort> {}
-//    pub fn types() -> Option<Vec<PyLanguageType>> {}
-
+    //    pub fn sort() -> Option<PySort> {}
+    //    pub fn types() -> Option<Vec<PyLanguageType>> {}
 }
