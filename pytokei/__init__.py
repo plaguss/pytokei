@@ -7,6 +7,7 @@ from pytokei._pytokei import (
     Report,
     Sort,
     sort_types,
+    __version__
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "Report",
     "Sort",
     "sort_types",
+    "__version__"
 ]
