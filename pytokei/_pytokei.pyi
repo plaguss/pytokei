@@ -9,9 +9,11 @@ class Config:
 
     Examples
     --------
+    ```python
     >>> conf = pytokei.Config()
     >>> conf
     Config()
+    ```
     """
     def __init__(self) -> None: ...
     @property
@@ -286,12 +288,12 @@ class Languages:
 
     Examples
     --------
-    ```python
-    >>> from pytokei import Languages
-    >>> langs = Languages()
-    >>> langs
-    Languages()
-    ```
+        ```python
+        >>> from pytokei import Languages
+        >>> langs = Languages()
+        >>> langs
+        Languages()
+        ```
 
     References
     ----------
