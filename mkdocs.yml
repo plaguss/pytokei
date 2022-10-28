@@ -6,15 +6,15 @@ theme:
   name: "material"
   palette: 
     - scheme: default
-      primary: deep purple
-      accent: green
+      primary: blue grey
+      accent: orange
       toggle:
         icon: material/lightbulb
         name: Switch to dark mode
 
     - scheme: slate
-      primary: deep purple
-      accent: green
+      primary: blue grey
+      accent: orange
       toggle:
         icon: material/lightbulb
         name: Switch to light mode
@@ -59,7 +59,7 @@ plugins:
 
 nav:
     - Intro: index.md
-    - Examples: examples.md
+    - Examples: usage.md
     - API:
         - api/config.md
         - api/language_type.md
