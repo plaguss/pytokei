@@ -368,7 +368,7 @@ class TestPytokei:
         assert all([totals[c] == v for c, v in zip(columns, values)])
 
     def test_languages_default_report_plain(self, languages):
-        report = languages.get_report_compact_plain()
+        report = languages.report_compact_plain()
         lang_names = ["TOML", "Dockerfile", "Python", "Rust"]
         stats = ["files", "lines", "code", "comments", "blanks"]
         values_dockerfile = [1, 16, 7, 3, 6]

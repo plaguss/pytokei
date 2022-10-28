@@ -127,9 +127,8 @@ impl PyLanguages {
         map
     }
 
-    pub fn get_report_compact_plain(&self) -> HashMap<&str, HashMap<&str, usize>> {
+    pub fn report_compact_plain(&self) -> HashMap<&str, HashMap<&str, usize>> {
         // Returns the info obtained from the default CLI command in compact mode
-        // NOTE: Rewrite using the internal structs
         let mut report = HashMap::new();
 
         for (ltype, lang) in &self.languages {
