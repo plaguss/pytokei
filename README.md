@@ -33,7 +33,7 @@ Wanted to practice rust, and taking this library to python seemed like a good op
 
 But really? Just for fun :)
 
-## [Documentation](not_ready)
+## [Documentation](https://plaguss.github.io/pytokei/)
 
 ## Development
 
