@@ -23,7 +23,9 @@ Requires Python >= 3.7.
 
 Binaries are available for:
 
-?
+* **Linux**: `x86_64`, `aarch64`, `i686`, `armv7l`, `musl-x86_64` & `musl-aarch64`
+* **MacOS**: `x86_64` & `arm64` (except python 3.7)
+* **Windows**: `amd64` & `win32`
 
 Otherwise, you can install from source which requires Rust stable to be installed.
 
