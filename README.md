@@ -2,14 +2,15 @@
 ---
 Pytokei is a python binding to [tokei](https://github.com/XAMPPRocky/tokei):
 
+<p align="center">
     Tokei is a program that displays statistics about your code. Tokei will show the number of files, total lines within those files and code, comments, and blanks grouped by language.
+</p>
+
 --- 
 
 This wrapper allows to obtain the same reports directly from python.
 
 For more information about `tokei`, please visit the original repo.
-
-[![Lines Of Code](https://tokei.rs/b1/github/XAMPPRocky/tokei?category=code)](https://github.com/plaguss/pytokei)
 
 
 ## Installation
