@@ -177,4 +177,4 @@ To see the sum of all the files found, the languages can be totaled up:
 {'code': 1291, 'lines': 1857, 'files': 34, 'comments': 273, 'blanks': 293}
 ```
 
-To see all the functionalities exposed, please visit the. 
+To see all the functionalities exposed, please visit the API docs. 
