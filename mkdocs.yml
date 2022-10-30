@@ -59,7 +59,7 @@ plugins:
 
 nav:
     - Intro: index.md
-    - Examples: usage.md
+    - Usage: usage.md
     - API:
         - api/config.md
         - api/language_type.md
