@@ -77,3 +77,8 @@ From python side:
 Run `make install-dev` inside a virtual environment, `make test`, `make mypy` and `make format` to ensure everything is as expected, and `make docs` to build the documentation.
 
 *There are some problems when building the docs with mkdocstrings, a reminder is in the following [github issue](https://github.com/mkdocstrings/mkdocstrings/issues/404). For the moment, it seems that the best option is to remove the .so file and build the docs without it.*
+
+To create a new release:
+
+- Update the version in [Cargo.toml](./Cargo.toml).
+- Create a new tag to run the github action workflow.
