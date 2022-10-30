@@ -1,0 +1,5 @@
+echo '=================='
+echo 'Timing python run:'
+echo '------------------'
+python -m timeit -n 100 -r 1 'import pytokei; cpython = pytokei.Languages(); cpython.get_statistics(["resources/cpython"], ["ignored"], pytokei.Config())'
+echo '=================='

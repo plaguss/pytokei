@@ -1,0 +1,8 @@
+FROM python:3.11
+
+RUN pip install pytokei
+
+COPY resources/cpython resources/cpython
+COPY bench_py.sh .
+
+CMD ["sh", "bench_py.sh"]
