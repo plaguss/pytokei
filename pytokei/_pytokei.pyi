@@ -15,10 +15,11 @@ class Config:
     Config()
     ```
     """
+
     def __init__(self) -> None: ...
     @property
     def columns(self) -> int:
-        """Width of columns to be printed to the terminal. This option is ignored in the library. 
+        """Width of columns to be printed to the terminal. This option is ignored in the library.
         Default: *Auto detected width of the terminal*.
         [tokei reference](https://docs.rs/tokei/latest/tokei/struct.Config.html#structfield.columns).
         """
@@ -83,6 +84,7 @@ class Language:
     Note:
         `mark_inaccurate` is not defined, this may be better done from the rust side.
     """
+
     def __init__(self) -> None: ...
     @property
     def blanks(self) -> int:
@@ -116,15 +118,14 @@ class Language:
         [tokei reference](https://docs.rs/tokei/latest/tokei/struct.Language.html#structfield.children).
         """
     def children_plain(self) -> dict[str, list[dict[str, dict[str, int]]]]:
-        """The equivalent version of `reports_plain` method, but with children. """
+        """The equivalent version of `reports_plain` method, but with children."""
     @property
     def innacurate(self) -> bool:
         """Whether this language had problems with file parsing.
         [tokei reference](https://docs.rs/tokei/latest/tokei/struct.Language.html#structfield.innacurate).
         """
     def lines(self) -> int:
-        """Returns the total number of lines.
-        """
+        """Returns the total number of lines."""
     def add_report(self, report: Report) -> int:
         """Add a `Report` to the Language.
         This will not update the totals in the `Language` class.
@@ -136,13 +137,13 @@ class Language:
         language is considered "literate" then it will be counted as comments.
         """
     def total(self) -> None:
-        """Totals up the statistics of the `Stat` class currently contained in the language. """
+        """Totals up the statistics of the `Stat` class currently contained in the language."""
     def is_empty(self) -> bool:
-        """Checks if the language is empty. Empty meaning it doesn't have any statistics. """
+        """Checks if the language is empty. Empty meaning it doesn't have any statistics."""
     def sort_by(self, category: Sort) -> None:
-        """Sorts each of the `Report`s contained in the language based on what category is provided. """
+        """Sorts each of the `Report`s contained in the language based on what category is provided."""
     def files(self) -> int:
-        """Counts the number of reports. """
+        """Counts the number of reports."""
     def __repr__(self) -> str: ...
 
 class LanguageType:
@@ -161,7 +162,7 @@ class LanguageType:
     Warning:
         The following methods aren't currently implemented:
         `from_path`, `from_file_extension`, `from_mime`,
-        `from_shebang`, `parse`, `parse_from_str`, `parse_from_slice`. 
+        `from_shebang`, `parse`, `parse_from_str`, `parse_from_slice`.
 
     Examples
     --------
@@ -183,11 +184,12 @@ class LanguageType:
     [tokei reference](https://docs.rs/tokei/latest/tokei/enum.LanguageType.html).
     The implementation of the different methods are here: [ref](https://docs.rs/tokei/latest/tokei/enum.LanguageType.html#impl)
     """
+
     def __init__(self) -> None: ...
     def __hash__(self) -> int: ...
     def __repr__(self) -> str: ...
     def name(self) -> str:
-        """Returns the display name of a language. """
+        """Returns the display name of a language."""
     # @staticmethod
     # def list() -> list[str]: ...  # How should this be typed??
     def is_literate(self) -> bool:
@@ -224,7 +226,7 @@ class LanguageType:
         ```
         """
     def allows_nested(self) -> bool:
-        """Returns whether the language allows nested multi line comments. """
+        """Returns whether the language allows nested multi line comments."""
     def nested_comments(self) -> list[tuple[str]]:
         """Returns what nested comments the language has. (Currently only D has any of this type.)
 
@@ -264,12 +266,12 @@ class LanguageType:
         --------
         ```python
         >>> LanguageType("Python").doc_quotes()
-        [('"""', '"""'), ("'''", "'''")]
+        [('""" ", " """'), ("'''", "'''")]
         ```
         """
     def shebangs(self) -> list[str]:
         """Returns the shebang of a language.
-        
+
         Examples
         --------
         ```python
@@ -299,6 +301,7 @@ class Languages:
     ----------
     [Languages implementation](https://docs.rs/tokei/latest/tokei/struct.Languages.html#impl)
     """
+
     def __init__(self) -> None: ...
     def get_statistics(
         self, paths: list[str], ignored: list[str], config: Config
@@ -320,9 +323,9 @@ class Languages:
                 Config instance. If you dont have any preferences, just pass `Config`.
         """
     def total(self) -> Language:
-        """Summary of the Languages struct. """
+        """Summary of the Languages struct."""
     def language_names(self) -> Optional[list[str]]:
-        """Returns the list of language names, if any was found. """
+        """Returns the list of language names, if any was found."""
     def __getitem__(self, lang_type: LanguageType) -> Language | ValueError:
         """Implements the same functionality as in tokei to access the contents of a given
         languages object by a key.
@@ -330,15 +333,21 @@ class Languages:
         Corresponds to `let rust = &languages[&LanguageType::Rust];` in python
         """
     def get_languages(self) -> dict[LanguageType, Language]:
-        """Exposes the inner struct from rust to the classes defined in python. """
+        """Exposes the inner struct from rust to the classes defined in python."""
     def files(self) -> dict[str, int]:
-        """Total number of files in the value, corresponding to the language name key. """
+        """Total number of files in the value, corresponding to the language name key."""
     def get_languages_plain(self) -> dict[str, list[dict[str, dict[str, int]]]]:
-        """The same method as `get_languages` but in python builtin objects. """
+        """The same method as `get_languages` but in python builtin objects."""
+    def total_plain(self) -> dict[str, int]:
+        """Returns the content of total as a dict."""
+    def report_compact_plain(self) -> dict[str, dict[str, int]]:
+        """Returns the information as the default command from tokei.
+        Computes the statistics per language.
+        """
 
 class Sort:
     """Used for sorting languages.
-    
+
     Examples
     --------
     ```python
@@ -352,6 +361,7 @@ class Sort:
     ----------
     [tokei reference](https://docs.rs/tokei/latest/tokei/enum.Sort.html)
     """
+
     def __init__(self) -> None: ...
     @staticmethod
     def from_str(s: str) -> Sort | ValueError:
@@ -393,16 +403,17 @@ class CodeStats:
     CodeStats(blanks: 0, code: 0, comments: 0, lines: 0)
     ```
     """
+
     def __init__(self) -> None: ...
     @property
     def blanks(self) -> int:
         """The blank lines in the blob.
-        [tokei reference](https://docs.rs/tokei/latest/tokei/struct.CodeStats.html#structfield.blanks) 
+        [tokei reference](https://docs.rs/tokei/latest/tokei/struct.CodeStats.html#structfield.blanks)
         """
     @property
     def code(self) -> int:
         """The lines of code in the blob.
-        [tokei reference](https://docs.rs/tokei/latest/tokei/struct.CodeStats.html#structfield.blanks) 
+        [tokei reference](https://docs.rs/tokei/latest/tokei/struct.CodeStats.html#structfield.blanks)
         """
     @property
     def comments(self) -> int:
@@ -417,13 +428,13 @@ class CodeStats:
         """
     @property
     def blobs_plain(self) -> dict[str, dict[str, int]]:
-        """Equivalent method to `blobs` but in builtin python objects. """
+        """Equivalent method to `blobs` but in builtin python objects."""
     def lines(self) -> int:
-        """Get the total lines in a blob of code. """
+        """Get the total lines in a blob of code."""
     def summarise(self) -> CodeStats:
-        """Creates a new `CodeStats` from an existing one with all of the child blobs merged. """
+        """Creates a new `CodeStats` from an existing one with all of the child blobs merged."""
     def plain(self) -> dict[str, int]:
-        """Returns the content of the blob as a dict, blanks, code, comments and lines. """
+        """Returns the content of the blob as a dict, blanks, code, comments and lines."""
     def __repr__(self) -> str: ...
 
 class Report:
@@ -443,15 +454,16 @@ class Report:
 
     But it isn't expected to be used like this, just get it from a parsed directory.
     """
+
     def __init__(self) -> None: ...
     @property
     def name(str) -> str:
-        """Filename that represents. """
+        """Filename that represents."""
     @property
     def stats(str) -> CodeStats:
-        """The code statistics found in the file. """
+        """The code statistics found in the file."""
     def __repr__(self) -> str: ...
     def plain(self) -> dict[str, dict[str, int]]:
-        """Representation of the object in builtin python objects, where the key corresponds 
+        """Representation of the object in builtin python objects, where the key corresponds
         to the filename that generated it, and the value is the result of `CodeStats.plain` method.
         """
