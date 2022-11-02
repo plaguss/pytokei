@@ -82,3 +82,4 @@ To create a new release:
 
 - Update the version in [Cargo.toml](./Cargo.toml).
 - Create a new tag to run the github action workflow.
+- git push --atomic origin main tag-name 
