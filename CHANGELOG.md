@@ -4,6 +4,17 @@ Here should be the updates to the project. As they are completed they will be ad
 
 - Add `pre-commit` to lint and format.
 
+# 0.1.2
+
+Fixed:
+    - `PyLanguages.report_compact_plain` now counts correctly the
+    summarised languages.
+
+
+Added typing info for:
+    - `Languages.total_plain`.
+    - `Languages.report_compact_plain`.
+
 # 0.1.1
 
 Updates/Fixes in docs:
