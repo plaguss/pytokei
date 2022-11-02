@@ -132,14 +132,14 @@ impl PyLanguages {
         let mut report = HashMap::new();
 
         for (ltype, lang) in &self.languages {
-            let mut stats = HashMap::new();
-            for r in &lang.reports {
-                stats.insert("lines", r.stats.lines());
-                stats.insert("code", r.stats.code);
-                stats.insert("comments", r.stats.comments);
-                stats.insert("blanks", r.stats.blanks);
-            }
-            stats.insert("files", lang.reports.len());
+            let summary = lang.summarise();
+            let stats = HashMap::from([
+                ("lines", summary.lines()),
+                ("code", summary.code),
+                ("comments", summary.comments),
+                ("blanks", summary.blanks),
+                ("files", lang.reports.len())
+            ]);
             report.insert(ltype.name(), stats);
         }
         report
