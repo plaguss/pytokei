@@ -60,6 +60,7 @@ plugins:
 nav:
     - Intro: index.md
     - Usage: usage.md
+    - CLI: cli.md
     - API:
         - api/config.md
         - api/language_type.md

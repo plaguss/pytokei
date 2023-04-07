@@ -29,6 +29,12 @@ Binaries are available for:
 
 Otherwise, you can install from source which requires Rust stable to be installed.
 
+To use the CLI, install with the needed dependencies (maybe with [`pipx`](https://github.com/pypa/pipx)).
+
+```bash
+pipx install pytokei[cli]
+```
+
 ## Development
 
 You will need:
