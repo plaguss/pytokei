@@ -23,11 +23,15 @@ classifiers = [
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
 description-file = "README.md"
+
 [project.optional-dependencies]
 cli = [
     "typer>=0.7.0",
     "rich>=13.3.0"
 ]
+
+[project.scripts]
+pytokei = "pytokei.cli:app"
 
 [project.urls]
 Homepage = 'https://github.com/plaguss/pytokei'
