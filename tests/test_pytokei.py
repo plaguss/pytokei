@@ -373,4 +373,6 @@ class TestPytokei:
         stats = ["files", "lines", "code", "comments", "blanks"]
         values_dockerfile = [1, 16, 7, 3, 6]
         assert all([name in report.keys() for name in lang_names])
-        assert all([report["Dockerfile"][k] == v for k, v in zip(stats, values_dockerfile)])
+        assert all(
+            [report["Dockerfile"][k] == v for k, v in zip(stats, values_dockerfile)]
+        )
