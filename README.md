@@ -27,6 +27,27 @@ $ python
 }
 ```
 
+It includes a small CLI for simple use cases (run against the pytokei's folder):
+
+```console
+$ pytokei pytokei
+                        pytokei                         
+┏━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━┳━━━━━━━━━━┳━━━━━━━━┓
+┃ language   ┃ Files ┃ Lines ┃ Code ┃ Comments ┃ Blanks ┃
+┡━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━╇━━━━━━━━━━╇━━━━━━━━┩
+│ Rust       │     9 │  1011 │  846 │       49 │    116 │
+│ Python     │     5 │   568 │  436 │       13 │    119 │
+│ Markdown   │    11 │   423 │  123 │      179 │    121 │
+│ Plain Text │     4 │   133 │    0 │      133 │      0 │
+│ TOML       │     3 │    75 │   59 │        6 │     10 │
+│ YAML       │     1 │    69 │   63 │        0 │      6 │
+│ Makefile   │     1 │    26 │   18 │        0 │      8 │
+│ Dockerfile │     1 │    16 │    7 │        3 │      6 │
+│ Shell      │     3 │    12 │   12 │        0 │      0 │
+│ Autoconf   │     3 │     7 │    7 │        0 │      0 │
+└────────────┴───────┴───────┴──────┴──────────┴────────┘
+```
+
 For more information about `tokei`, please visit the original repo.
 
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pytokei.svg)](https://pypi.org/project/pytokei/)
