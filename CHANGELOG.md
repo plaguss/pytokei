@@ -4,6 +4,11 @@ Here should be the updates to the project. As they are completed they will be ad
 
 - Add `pre-commit` to lint and format.
 
+
+# 0.2.0
+
+Added a small CLI to run the program from the console.
+
 # 0.1.2
 
 Fixed:
