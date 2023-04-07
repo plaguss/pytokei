@@ -1,14 +1,9 @@
-from pytokei._pytokei import (
-    CodeStats,
-    Config,
-    Language,
-    Languages,
-    LanguageType,
-    Report,
-    Sort,
-    sort_types,
-    __version__
-)
+# fmt: off
+from pytokei._pytokei import (CodeStats, Config,  # type: ignore[attr-defined]
+                              Language, Languages, LanguageType, Report, Sort,
+                              __version__, sort_types)
+
+# fmt: on
 
 __all__ = [
     "CodeStats",
@@ -19,5 +14,5 @@ __all__ = [
     "Report",
     "Sort",
     "sort_types",
-    "__version__"
+    "__version__",
 ]
