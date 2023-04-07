@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Tuple
 
 import typer
 from rich.console import Console
@@ -21,7 +21,7 @@ REPORT_TO_POSITION = {
 }
 
 
-def _report_as_list(report: ReportType) -> List[List[str]]:
+def _report_as_list(report: ReportType) -> List[Tuple[str, int, int, int, int, int]]:
     """Transform the report to simplify sorting.
 
     Args:
@@ -33,14 +33,14 @@ def _report_as_list(report: ReportType) -> List[List[str]]:
             then files, lines, code, comments and blanks.
     """
     return [
-        [
+        (
             lang,
             result["files"],
             result["lines"],
             result["code"],
             result["comments"],
             result["blanks"],
-        ]
+        )
         for lang, result in report.items()
     ]
 
@@ -49,7 +49,7 @@ def to_table(
     report: ReportType,
     title: str = "pytokei report",
     colored: bool = True,
-    sort: Optional[str] = None,
+    sort: str = "lines",
 ) -> None:
     """Creates a rich table to print the report to the console.
 
@@ -59,10 +59,9 @@ def to_table(
         colored (bool): Whether to report the table with colors or not.
         sort (str, optional): Variable to sort the table. By default is not sorted.
     """
-    report = _report_as_list(report)
+    report_ = _report_as_list(report)
 
-    if sort:
-        report = sorted(report, key=lambda x: x[REPORT_TO_POSITION[sort]], reverse=True)
+    report_ = sorted(report_, key=lambda x: x[REPORT_TO_POSITION[sort]], reverse=True)
 
     table = Table(title=title)
     columns = ("language", "files", "lines", "code", "comments", "blanks")
@@ -85,7 +84,7 @@ def to_table(
             "grey39",
         )
     else:
-        colors_even = (None,) * 6
+        colors_even = ("",) * 6
         colors_odd = colors_even
 
     table.add_column(
@@ -97,7 +96,7 @@ def to_table(
             c.capitalize(), justify="right", style=color, header_style=color
         )
 
-    for i, data in enumerate(report):
+    for i, data in enumerate(report_):
         colors = colors_even if (i % 2 == 0) else colors_odd
         row = [Text(text=data[0], style=colors[0])]
         for value, color in zip(data[1:], colors[1:]):
@@ -112,16 +111,16 @@ def to_table(
 @app.command()
 def main(
     path: Path = typer.Argument(..., help="Path to the file or directory to count."),
-    ignore_paths: Optional[str] = typer.Option(
+    ignore_paths: str = typer.Option(
         "nothing",
         "--ignore-paths",
         "-i",
         help=(
             "List of paths to ignore, comma separated. For example `/docs,pyproject.toml`"
-        ),  # TODO: Revisar como pasar lista de argumentos
+        ),
     ),
-    sort: Optional[str] = typer.Option(
-        None,
+    sort: str = typer.Option(
+        "lines",
         "-s",
         "--sort",
         help=f"If given, sorts the result by this value. Must be one of {set(REPORT_TO_POSITION.keys())}.",
@@ -129,7 +128,7 @@ def main(
     colored: bool = typer.Option(
         True, help="Whether to add color to the report or not."
     ),
-):  # pragma: no cover
+) -> None:  # pragma: no cover
     """Pytokei Command Line Interface."""
     langs = pytokei.Languages()
     conf = pytokei.Config()  # Just use the default for now
