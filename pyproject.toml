@@ -23,6 +23,7 @@ classifiers = [
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
 description-file = "README.md"
+dynamic = ["version"]
 
 [project.optional-dependencies]
 cli = [
