@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos, windows]
-        rust-version: [stable, '1.70.0']
+        rust-version: [stable, '1.82.0']
         python-version:
           - '3.8'
           - '3.9'
@@ -48,9 +48,12 @@ jobs:
     - name: cache rust
       uses: Swatinem/rust-cache@v2
 
-    - run: pip install -r requirements/test.txt
+    - name: install uv
+      uses: astral-sh/setup-uv@v5
 
-    - run: pip install -e .
+    - run: uv pip install -r requirements/test.txt --system
+
+    - run: uv pip install -e . --system
 
     - run: make test
 
@@ -64,8 +67,11 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: install uv
+      uses: astral-sh/setup-uv@v5
+
     - name: install
-      run: pip install -r requirements/docs.txt
+      run: uv pip install -r requirements/docs.txt --system
 
     - name: mkdocs gh-pages
       run: mkdocs gh-deploy --force
@@ -119,7 +125,10 @@ jobs:
           python-version: '3.12'
           architecture: ${{ matrix.python-architecture || 'x64' }}
 
-      - run: pip install twine
+      - name: install uv
+        uses: astral-sh/setup-uv@v5
+
+      - run: uv pip install twine --system
 
       - name: build sdist
         if: ${{ matrix.os == 'ubuntu' && matrix.target == 'x86_64' && matrix.manylinux == 'auto' }}
@@ -195,7 +204,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - run: pip install twine
+      - name: install uv
+        uses: astral-sh/setup-uv@v5
+
+      - run: uv pip install twine --system
 
       - name: get dist artifacts
         uses: actions/download-artifact@v4
