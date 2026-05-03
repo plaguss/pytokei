@@ -843,7 +843,7 @@ dependencies = [
 
 [[package]]
 name = "pytokei"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "pyo3",
  "tokei",
