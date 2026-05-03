@@ -199,13 +199,10 @@ jobs:
 
     environment:
       name: release
-      url: https://pypi.org/project/cachetto/${{ steps.inspect_package.outputs.version }}
+      url: https://pypi.org/project/pytokei/
 
     permissions:
       id-token: write
-
-    outputs:
-      package-version: ${{ steps.inspect_package.outputs.version }}
 
     steps:
       - uses: actions/checkout@v4

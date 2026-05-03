@@ -19,7 +19,7 @@ For more information about `tokei`, please visit its [repo](https://github.com/X
 pip install pytokei
 ```
 
-Requires Python >= 3.7.
+Requires Python >= 3.10.
 
 Binaries are available for:
 
