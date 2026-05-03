@@ -61,13 +61,13 @@ For more information about `tokei`, please visit the original repo.
 pip install pytokei
 ```
 
-Requires Python >= 3.7.
+Requires Python >= 3.10.
 
 Binaries are available for:
 
 * **Linux**: `x86_64`, `aarch64`, `i686`, `armv7l`, `musl-x86_64` & `musl-aarch64`
-* **MacOS**: `x86_64` & `arm64` (except python 3.7)
-* **Windows**: `amd64` & `win32`
+* **MacOS**: `x86_64` & `arm64`
+* **Windows**: `amd64`, `win32` & `aarch64`
 
 Otherwise, you can install from source which requires Rust stable to be installed.
 

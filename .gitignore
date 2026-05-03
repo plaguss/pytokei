@@ -137,3 +137,5 @@ draft/
 notes.md
 
 bench/resources
+
+*.pdb
