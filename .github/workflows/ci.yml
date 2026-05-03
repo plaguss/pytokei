@@ -15,13 +15,15 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, macos, windows]
-        rust-version: [stable, '1.64.0']
+        rust-version: [stable, '1.70.0']
         python-version:
-          - '3.7'
           - '3.8'
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
 
     runs-on: ${{ matrix.os }}-latest
 
@@ -31,22 +33,20 @@ jobs:
       OS: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: set up python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: install rust
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@master
       with:
-        profile: minimal
         toolchain: ${{ matrix.rust-version }}
-        override: true
 
     - name: cache rust
-      uses: Swatinem/rust-cache@v1
+      uses: Swatinem/rust-cache@v2
 
     - run: pip install -r requirements/test.txt
 
@@ -57,12 +57,12 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: set up python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     - name: install
       run: pip install -r requirements/docs.txt
@@ -111,25 +111,25 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: set up python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
           architecture: ${{ matrix.python-architecture || 'x64' }}
 
       - run: pip install twine
 
       - name: build sdist
         if: ${{ matrix.os == 'ubuntu' && matrix.target == 'x86_64' && matrix.manylinux == 'auto' }}
-        uses: messense/maturin-action@v1
+        uses: PyO3/maturin-action@v1
         with:
           command: sdist
           args: --out dist
 
       - name: build wheels
-        uses: messense/maturin-action@v1
+        uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux || 'auto' }}
@@ -139,9 +139,9 @@ jobs:
 
       - run: twine check dist/*
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: pypi_files
+          name: pypi_files_${{ matrix.os }}_${{ matrix.target }}_${{ matrix.manylinux || 'auto' }}
           path: dist
 
   list-pypi-files:
@@ -149,12 +149,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: get dist artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: pypi_files
+          pattern: pypi_files_*
+          merge-multiple: true
           path: dist
 
       - name: list dist files
@@ -168,8 +169,8 @@ jobs:
          tree -a sdist-files
       - name: extract and list wheel file
         run: |
-         ls dist/*cp37-abi3-manylinux*x86_64.whl | head -n 1
-         python -m zipfile --list `ls dist/*cp37-abi3-manylinux*x86_64.whl | head -n 1`
+         ls dist/*cp38-abi3-manylinux*x86_64.whl | head -n 1
+         python -m zipfile --list `ls dist/*cp38-abi3-manylinux*x86_64.whl | head -n 1`
   # Used for branch protection checks, see https://github.com/marketplace/actions/alls-green#why
   check:
     if: always()
@@ -187,19 +188,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: set up python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - run: pip install twine
 
       - name: get dist artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: pypi_files
+          pattern: pypi_files_*
+          merge-multiple: true
           path: dist
 
       - run: twine check dist/*

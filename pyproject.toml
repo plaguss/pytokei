@@ -1,20 +1,22 @@
 [build-system]
-requires = ['maturin>=0.14,<0.15']
+requires = ['maturin>=1.0,<2']
 build-backend = 'maturin'
 
 [project]
 name = 'pytokei'
-requires-python = '>=3.7'
+requires-python = '>=3.8'
 description = 'Python bindings to tokei, the Rust library to count code quickly.'
 authors = [
     {name ='Agustin Piqueres', email = 'agustin.piqueres@gmail.com'},
 ]
 classifiers = [
-    'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Operating System :: POSIX :: Linux',
@@ -23,6 +25,7 @@ classifiers = [
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
 description-file = "README.md"
+dynamic = ["version"]
 
 [project.optional-dependencies]
 cli = [
