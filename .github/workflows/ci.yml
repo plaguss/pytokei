@@ -59,7 +59,7 @@ jobs:
     - name: build extension
       run: uv run maturin develop
 
-    - run: uv run make test
+    - run: uv run --no-sync pytest tests
 
   docs:
     runs-on: ubuntu-latest
