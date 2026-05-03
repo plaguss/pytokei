@@ -1,14 +1,7 @@
-from pathlib import Path
+import argparse
 from typing import Dict, List, Tuple
 
-import typer
-from rich.console import Console
-from rich.table import Table
-from rich.text import Text
-
 import pytokei
-
-app = typer.Typer()
 
 ReportType = Dict[str, Dict[str, int]]
 
@@ -20,18 +13,10 @@ REPORT_TO_POSITION = {
     "blanks": 5,
 }
 
+COLUMNS = ("language", "files", "lines", "code", "comments", "blanks")
+
 
 def _report_as_list(report: ReportType) -> List[Tuple[str, int, int, int, int, int]]:
-    """Transform the report to simplify sorting.
-
-    Args:
-        report (ReportType): Output from pytokei.
-
-    Returns:
-        List[List[str]]: report in a list of lists.
-            The first column corresponds to the languages,
-            then files, lines, code, comments and blanks.
-    """
     return [
         (
             lang,
@@ -45,94 +30,59 @@ def _report_as_list(report: ReportType) -> List[Tuple[str, int, int, int, int, i
     ]
 
 
-def to_table(
-    report: ReportType,
-    title: str = "pytokei report",
-    colored: bool = True,
-    sort: str = "lines",
-) -> None:
-    """Creates a rich table to print the report to the console.
+def to_table(report: ReportType, title: str = "pytokei report", sort: str = "lines") -> None:
+    rows = _report_as_list(report)
+    rows = sorted(rows, key=lambda x: x[REPORT_TO_POSITION[sort]], reverse=True)
 
-    Args:
-        report (Dict[str, Dict[str, int]]): pytokei's report.
-        title (str, optional): Title for the table. Defaults to "pytokei report".
-        colored (bool): Whether to report the table with colors or not.
-        sort (str, optional): Variable to sort the table. By default is not sorted.
-    """
-    report_ = _report_as_list(report)
+    col_widths = [len(c) for c in COLUMNS]
+    for row in rows:
+        col_widths[0] = max(col_widths[0], len(row[0]))
+        for i in range(1, 6):
+            col_widths[i] = max(col_widths[i], len(str(row[i])))
 
-    report_ = sorted(report_, key=lambda x: x[REPORT_TO_POSITION[sort]], reverse=True)
+    def fmt_row(cells: tuple) -> str:
+        parts = [str(cells[0]).ljust(col_widths[0])]
+        parts += [str(cells[i]).rjust(col_widths[i]) for i in range(1, 6)]
+        return "  ".join(parts)
 
-    table = Table(title=title)
-    columns = ("language", "files", "lines", "code", "comments", "blanks")
+    header = fmt_row(COLUMNS)
+    separator = "-" * len(header)
 
-    if colored:
-        colors_even = (
-            "deep_sky_blue2",
-            "medium_purple",
-            "red",
-            "gold1",
-            "green3",
-            "grey82",
-        )
-        colors_odd = (
-            "deep_sky_blue3",
-            "dark_violet",
-            "dark_red",
-            "yellow",
-            "green4",
-            "grey39",
-        )
-    else:
-        colors_even = ("",) * 6
-        colors_odd = colors_even
+    print(f"\n{title}\n")
+    print(header)
+    print(separator)
+    for row in rows:
+        print(fmt_row(row))
+    print()
 
-    table.add_column(
-        columns[0], justify="left", style=colors_even[0], header_style=colors_even[0]
+
+def main() -> None:  # pragma: no cover
+    """Pytokei Command Line Interface."""
+    parser = argparse.ArgumentParser(
+        prog="pytokei",
+        description="Count lines of code in a file or directory.",
     )
-
-    for c, color in zip(columns[1:], colors_even[1:]):
-        table.add_column(
-            c.capitalize(), justify="right", style=color, header_style=color
-        )
-
-    for i, data in enumerate(report_):
-        colors = colors_even if (i % 2 == 0) else colors_odd
-        row = [Text(text=data[0], style=colors[0])]
-        for value, color in zip(data[1:], colors[1:]):
-            row.append(Text(text=str(value), style=color))
-
-        table.add_row(*row)
-
-    console = Console()
-    console.print(table)
-
-
-@app.command()
-def main(
-    path: Path = typer.Argument(..., help="Path to the file or directory to count."),
-    ignore_paths: str = typer.Option(
-        "nothing",
+    parser.add_argument("path", help="Path to the file or directory to count.")
+    parser.add_argument(
         "--ignore-paths",
         "-i",
-        help=(
-            "List of paths to ignore, comma separated. For example `/docs,pyproject.toml`"
-        ),
-    ),
-    sort: str = typer.Option(
-        "lines",
-        "-s",
+        default="nothing",
+        metavar="PATHS",
+        help="Comma-separated list of paths to ignore (e.g. /docs,pyproject.toml).",
+    )
+    parser.add_argument(
         "--sort",
-        help=f"If given, sorts the result by this value. Must be one of {set(REPORT_TO_POSITION.keys())}.",
-    ),
-    colored: bool = typer.Option(
-        True, help="Whether to add color to the report or not."
-    ),
-) -> None:  # pragma: no cover
-    """Pytokei Command Line Interface."""
+        "-s",
+        default="lines",
+        choices=list(REPORT_TO_POSITION.keys()),
+        help="Sort the result by this column (default: lines).",
+    )
+
+    args = parser.parse_args()
+
     langs = pytokei.Languages()
-    conf = pytokei.Config()  # Just use the default for now
-    langs.get_statistics([str(path)], ignore_paths.split(","), conf)
+    conf = pytokei.Config()
+    langs.get_statistics([args.path], args.ignore_paths.split(","), conf)
     report = langs.report_compact_plain()
 
-    to_table(report, title=str(path), colored=colored, sort=sort)
+    to_table(report, title=args.path, sort=args.sort)
