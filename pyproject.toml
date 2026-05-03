@@ -24,14 +24,8 @@ classifiers = [
 description-file = "README.md"
 dynamic = ["version"]
 
-[project.optional-dependencies]
-cli = [
-    "typer>=0.7.0",
-    "rich>=13.3.0"
-]
-
 [project.scripts]
-pytokei = "pytokei.cli:app"
+pytokei = "pytokei.cli:main"
 
 [project.urls]
 Homepage = 'https://github.com/plaguss/pytokei'
