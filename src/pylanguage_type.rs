@@ -3,7 +3,7 @@ use std::collections::hash_map::DefaultHasher;
 // Required to call the `.hash` and `.finish` methods, which are defined on traits.
 use std::hash::{Hash, Hasher};
 
-use pyo3::class::basic::CompareOp;
+use pyo3::basic::CompareOp;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
