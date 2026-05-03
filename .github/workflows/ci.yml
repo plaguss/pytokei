@@ -51,13 +51,15 @@ jobs:
     - name: install uv
       uses: astral-sh/setup-uv@v5
 
-    - run: uv pip install -r requirements/test.txt --system
+    - name: create venv and install deps
+      run: |
+        uv venv --python ${{ matrix.python-version }}
+        uv pip install -r requirements/test.txt maturin
 
-    - run: uv pip install maturin --system
+    - name: build extension
+      run: uv run maturin develop
 
-    - run: maturin develop
-
-    - run: make test
+    - run: uv run make test
 
   docs:
     runs-on: ubuntu-latest
